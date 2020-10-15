@@ -65,6 +65,34 @@ def login():
     return render_template('auth/login.html')
 
 
+@bp.route('/internal', methods=('GET', 'POST'))
+def internal_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        db = get_db()
+        error = None
+        user = db.execute(
+            'SELECT * FROM internal_user WHERE username = ?', (username,)
+        ).fetchone()
+
+        if user is None:
+            error = 'Incorrect username.'
+        elif not check_password_hash(user['password'], password):
+            error = 'Incorrect password.'
+
+        if error is None:
+            session.clear()
+            session['user_id'] = user['id']
+            return redirect(url_for('index'))
+
+        flash(error)
+
+    return render_template('auth/internal_login.html')
+
+
+
+
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
@@ -75,6 +103,24 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
+
+
+
+            
+@bp.before_app_request
+def load_logged_in_Internal_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.internal = None
+    else:
+        g.internal = get_db().execute(
+            'SELECT * FROM internal_user WHERE id = ?', (user_id,)
+        ).fetchone()
+
+
+
+
 
 
 
@@ -89,6 +135,16 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+def iternal_login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.internal is None:
+            return redirect(url_for('auth.internal_login'))
 
         return view(**kwargs)
 

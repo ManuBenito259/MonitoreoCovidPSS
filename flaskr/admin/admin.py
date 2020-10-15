@@ -28,11 +28,11 @@ def admin_login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('admin.index'))
+            return redirect(url_for('admin.admin_index'))
 
         flash(error)
 
-    return render_template('admin/login')
+    return render_template('admin/login.html')
 
 
 @bp.route('/index', methods=('GET', 'POST'))
@@ -58,7 +58,7 @@ def admin_index():
                 (username, generate_password_hash(password))
             )
             db.commit()
-            return redirect(url_for('admin.index'))
+            return redirect(url_for('admin.admin_index'))
 
         flash(error)
 
