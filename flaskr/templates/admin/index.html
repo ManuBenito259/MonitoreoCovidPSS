@@ -1,15 +1,30 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Create new Internal User{% endblock %}</h1>
+  <h1>{% block title %}Posts{% endblock %}</h1>
+  {% if g.internal %}
+    <a class="action" href="{{ url_for('public.create') }}">New</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Register">
-  </form>
+  {# read users #}
+  {% for user in read_users %}
+    <article class="read_user">
+      <header>
+        <div>
+          <h1>{{ user['id'] }}</h1>
+          <div class="about">by {{ user['username'] }} }</div>
+        </div>
+
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+
+
 {% endblock %}
+
+

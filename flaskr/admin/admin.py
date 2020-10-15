@@ -35,31 +35,34 @@ def admin_login():
     return render_template('admin/login.html')
 
 
-@bp.route('/index', methods=('GET', 'POST'))
+@bp.route('/index')
 def admin_index():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
+    db = get_db()
+    read_users = db.execute(
+        'SELECT *'
+        ' FROM user'
+        ' ORDER BY id DESC'
+    ).fetchall()
 
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif db.execute(
-                'SELECT id FROM internal_user WHERE username = ?', (username,)
-        ).fetchone() is not None:
-            error = 'User {} is already registered.'.format(username)
+    #read_users = db.execute(
+    #    'SELECT dni, nombre, apellido, jurisdiccion'
+    #    ' FROM usuarioLector'
+    #    ' ORDER BY apellido DESC'
+    #).fetchall()
 
-        if error is None:
-            db.execute(
-                'INSERT INTO internal_user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
-            )
-            db.commit()
-            return redirect(url_for('admin.admin_index'))
+    write_users = db.execute(
+        'SELECT dni, nombre, apellido, centroSalud'
+        ' FROM usuarioCarga'
+        ' ORDER BY apellido DESC'
+    ).fetchall()
 
-        flash(error)
+    admins = db.execute(
+        'SELECT id, username'
+        ' FROM admin'
+        ' ORDER BY id DESC'
+    ).fetchall()
+    return render_template('admin/index.html', read_users=read_users)
 
-    return render_template('admin/index.html')
+
+
+
