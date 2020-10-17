@@ -3,7 +3,7 @@
 
 {% block header %}
   <h1>{% block title %}Posts{% endblock %}</h1>
-  {% if g.internal %}
+  {% if g.user %}
     <a class="action" href="{{ url_for('public.create') }}">New</a>
   {% endif %}
 {% endblock %}
