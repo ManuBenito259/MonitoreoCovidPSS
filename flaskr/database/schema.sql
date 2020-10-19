@@ -81,7 +81,7 @@ CREATE TABLE usuarioCarga(
 CREATE TABLE cargaDiaria(
     id INTEGER AUTO_INCREMENT,
     centroSalud INTEGER UNSIGNED NOT NULL,
-    fecha DATE NOT NULL,
+    fecha VARCHAR(45) NOT NULL, /*TODO: fix date type */
     respDisp INTEGER NOT NULL,
     respOc INTEGER NOT NULL,
     camaUTIDisp INTEGER NOT NULL,
