@@ -24,13 +24,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-<<<<<<< HEAD
-
-
-    from .database import db
-=======
     from flaskr.database import db
->>>>>>> 53bb372a5cd6dae81edaaadb030a21380ef27b55
     db.init_app(app)
 
     from . import auth
@@ -43,9 +37,6 @@ def create_app(test_config=None):
     from .admin import admin
     app.register_blueprint(admin.bp)
 
-<<<<<<< HEAD
-    return app
-=======
     from .viewer import viewer
     app.register_blueprint(viewer.bp)
 
@@ -54,4 +45,3 @@ def create_app(test_config=None):
 
 
     return app
->>>>>>> 53bb372a5cd6dae81edaaadb030a21380ef27b55

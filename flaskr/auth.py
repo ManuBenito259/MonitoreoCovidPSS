@@ -116,12 +116,7 @@ def load_logged_in_viewer_user(user_id):
     ).fetchone()
 
 
-<<<<<<< HEAD
-@bp.before_app_request
-def load_logged_in_Internal_user():
-=======
 def load_logged_in_uploader_user():
->>>>>>> 53bb372a5cd6dae81edaaadb030a21380ef27b55
     user_id = session.get('user_id')
 
     if user_id is None:
@@ -169,8 +164,6 @@ def uploader_login_required(view):
         return view(**kwargs)
 
     return wrapped_view
-<<<<<<< HEAD
-=======
 
 
 def admin_login_required(view):
@@ -182,4 +175,3 @@ def admin_login_required(view):
         return view(**kwargs)
 
     return wrapped_view
->>>>>>> 53bb372a5cd6dae81edaaadb030a21380ef27b55
