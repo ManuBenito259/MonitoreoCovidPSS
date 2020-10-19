@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS viewer_user;
+DROP TABLE IF EXISTS uploader_user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS internal_user;
@@ -78,7 +79,7 @@ CREATE TABLE usuarioCarga(
 );
 
 CREATE TABLE cargaDiaria(
-    id INTEGER UNSIGNED NOT NULL,
+    id INTEGER AUTO_INCREMENT,
     centroSalud INTEGER UNSIGNED NOT NULL,
     fecha DATE NOT NULL,
     respDisp INTEGER NOT NULL,
@@ -102,17 +103,18 @@ CREATE TABLE cargaDiaria(
 
 );
 
-CREATE TABLE user (
+CREATE TABLE viewer_user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL
 );
 
-CREATE TABLE internal_user (
+CREATE TABLE uploader_user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL
 );
+
 
 CREATE TABLE admin (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

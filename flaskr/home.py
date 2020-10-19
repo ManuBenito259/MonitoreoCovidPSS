@@ -6,10 +6,10 @@ from werkzeug.exceptions import abort
 from flaskr.auth import viewer_login_required, uploader_login_required
 from flaskr.database.db import get_db
 
-bp = Blueprint('viewer', __name__)
+bp = Blueprint('home', __name__)
 
 
 @bp.route('/')
 def index():
-    return render_template('viewer/index.html', posts=posts)
+    return render_template('home/home.html')
 

@@ -5,49 +5,20 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from flaskr.db import get_db
+from flaskr.database.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@bp.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
 
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
-        ).fetchone() is not None:
-            error = 'User {} is already registered.'.format(username)
-
-        if error is None:
-            db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
-            )
-            db.commit()
-            return redirect(url_for('auth.login'))
-
-        flash(error)
-
-    return render_template('auth/register.html')
-
-
-@bp.route('/login', methods=('GET', 'POST'))
-def login():
+@bp.route('/viewer', methods=('GET', 'POST'))
+def viewer_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
+            'SELECT * FROM viewer_user WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -58,22 +29,22 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            return redirect(url_for('data.index'))
 
         flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('auth/viewer_login.html')
 
 
-@bp.route('/internal', methods=('GET', 'POST'))
-def internal_login():
+@bp.route('/uploader', methods=('GET', 'POST'))
+def uploader_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM internal_user WHERE username = ?', (username,)
+            'SELECT * FROM uploader_user WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -84,16 +55,40 @@ def internal_login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            return redirect(url_for('upload.upload'))
 
         flash(error)
 
-    return render_template('auth/internal_login.html')
+    return render_template('auth/uploader_login.html')
 
 
+@bp.route('/admin', methods=('GET', 'POST'))
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        db = get_db()
+        error = None
+        user = db.execute(
+            'SELECT * FROM admin WHERE username = ?', (username,)
+        ).fetchone()
+
+        if user is None:
+            error = 'Incorrect username.'
+        elif not check_password_hash(user['password'], password):
+            error = 'Incorrect password.'
+
+        if error is None:
+            session.clear()
+            session['user_id'] = user['id']
+            return redirect(url_for('admin.admin_index'))
+
+        flash(error)
+
+    return render_template('auth/admin_login.html')
 
 
-@bp.before_app_request
+@bp.before_app_request  #TODO: mayor bug on users credentials administration
 def load_logged_in_user():
     user_id = session.get('user_id')
 
@@ -101,27 +96,46 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM viewer_user WHERE id = ?', (user_id,)
         ).fetchone()
 
+        if g.user is None:
+            g.user = get_db().execute(
+            'SELECT * FROM uploader_user WHERE id = ?', (user_id,)
+            ).fetchone()
+
+            if g.user is None:
+                g.user = get_db().execute(
+                    'SELECT * FROM admin WHERE id = ?', (user_id,)
+                ).fetchone()
 
 
-            
-@bp.before_app_request
-def load_logged_in_Internal_user():
+def load_logged_in_viewer_user(user_id):
+    g.user = get_db().execute(
+        'SELECT * FROM viewer_user WHERE id = ?', (user_id,)
+    ).fetchone()
+
+
+def load_logged_in_uploader_user():
     user_id = session.get('user_id')
 
     if user_id is None:
-        g.internal = None
+        g.user = None
     else:
-        g.internal = get_db().execute(
-            'SELECT * FROM internal_user WHERE id = ?', (user_id,)
+        g.user = get_db().execute(
+            'SELECT * FROM uploader_user WHERE id = ?', (user_id,)
         ).fetchone()
 
 
+def load_logged_in_admin():
+    user_id = session.get('user_id')
 
-
-
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute(
+            'SELECT * FROM admin WHERE id = ?', (user_id,)
+        ).fetchone()
 
 
 @bp.route('/logout')
@@ -130,7 +144,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-def login_required(view):
+def viewer_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
@@ -140,11 +154,23 @@ def login_required(view):
 
     return wrapped_view
 
-def iternal_login_required(view):
+
+def uploader_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.internal is None:
-            return redirect(url_for('auth.internal_login'))
+        if g.user is None:
+            return redirect(url_for('auth.uplaoder_login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+def admin_login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.admin_login'))
 
         return view(**kwargs)
 

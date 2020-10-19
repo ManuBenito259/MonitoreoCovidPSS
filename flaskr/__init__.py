@@ -24,19 +24,24 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-
-
-    from . import db
+    from flaskr.database import db
     db.init_app(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import statistics
-    app.register_blueprint(statistics.bp)
+    from . import home
+    app.register_blueprint(home.bp)
     app.add_url_rule('/', endpoint='index')
 
     from .admin import admin
     app.register_blueprint(admin.bp)
+
+    from .viewer import viewer
+    app.register_blueprint(viewer.bp)
+
+    from.uploader import uploader
+    app.register_blueprint(uploader.bp)
+
 
     return app
