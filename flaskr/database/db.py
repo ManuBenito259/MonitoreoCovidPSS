@@ -5,9 +5,11 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 from werkzeug.security import check_password_hash, generate_password_hash
 
+
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
 
 def get_db():
     if 'db' not in g:
@@ -36,10 +38,9 @@ def create_admin(db):
 def init_db():
     db = get_db()
 
-    with current_app.open_resource('schema.sql') as f:
+    with current_app.open_resource('database\schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
         create_admin(db)
-
 
 
 @click.command('init-db')
@@ -48,7 +49,3 @@ def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
     click.echo('Initialized the database.')
-
-
-
-

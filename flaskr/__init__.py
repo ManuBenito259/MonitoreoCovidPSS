@@ -24,19 +24,34 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+<<<<<<< HEAD
 
 
     from .database import db
+=======
+    from flaskr.database import db
+>>>>>>> 53bb372a5cd6dae81edaaadb030a21380ef27b55
     db.init_app(app)
 
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import statistics
-    app.register_blueprint(statistics.bp)
+    from . import home
+    app.register_blueprint(home.bp)
     app.add_url_rule('/', endpoint='index')
 
     from .admin import admin
     app.register_blueprint(admin.bp)
 
+<<<<<<< HEAD
     return app
+=======
+    from .viewer import viewer
+    app.register_blueprint(viewer.bp)
+
+    from.uploader import uploader
+    app.register_blueprint(uploader.bp)
+
+
+    return app
+>>>>>>> 53bb372a5cd6dae81edaaadb030a21380ef27b55

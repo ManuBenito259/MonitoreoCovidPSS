@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Posts{% endblock %}</h1>
-  {% if g.internal %}
-    <a class="action" href="{{ url_for('public.create') }}">New</a>
+  <h1>{% block title %}System Users{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('admin.uploaderRegister') }}">New Uploader</a>
+    <a class="action" href="{{ url_for('admin.viewerRegister') }}">New Viewer</a>
+    <a class="action" href="{{ url_for('admin.adminRegister') }}">New Admin</a>
   {% endif %}
 {% endblock %}
 

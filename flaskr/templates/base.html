@@ -8,9 +8,9 @@
       <li><span>{{ g.user['username'] }}</span>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Login</a>
-      <li><a href="{{ url_for('auth.internal_login') }}">Internal</a>
+      <li><a href="{{ url_for('auth.viewer_login') }}">Data</a>
+      <li><a href="{{ url_for('auth.uploader_login') }}">Uploads</a>
+      <li><a href="{{ url_for('auth.admin_login') }}">Internal</a>
     {% endif %}
   </ul>
 </nav>
