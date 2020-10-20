@@ -6,19 +6,51 @@
 {% endblock %}
 
 {% block content %}
+<FONT SIZE=2>
+<table class="eg">
+
+  <tr>
+    <th>Centro</th>
+    <th>Fecha</th>
+    <th>Respiradores disponibles</th>
+    <th>Respiradores ocupados</th>
+    <th>Camas de UTI disponibles</th>
+    <th>Camas de UTI ocupadas</th>
+    <th>Camas con GC disponibles</th>
+    <th>Camas con GC ocupadas</th>
+    <th>Pacientes dados de alta de UTI</th>
+    <th>Pacientes con COVID dados de alta de UTI</th>
+    <th>Pacientes fallecidos de UTI</th>
+    <th>Pacientes con COVID fallecidos de UTI</th>
+    <th>Pacientes con COVID derivados en UTI</th>
+    <th>Pacientes derivados en UTI</th>
+
+  </tr>
+
   {% for post in posts %}
     <article class="post">
-      <header>
-        <div>
-          <h1>{{ post['title'] }}</h1>
-          <div class="about">by {{ post['centroSalud'] }} }</div>
-        </div>
+      <tr>
+        <td>{{ post['centroSalud'] }}</td>
+        <td>{{ post['fecha'] }}</td>
+        <td>{{ post['respDisp'] }}</td>
+        <td>{{ post['respOc'] }}</td>
+        <td>{{ post['camaUTIDisp'] }}</td>
+        <td>{{ post['camaUTIOc'] }}</td>
+        <td>{{ post['camaGCDisp'] }}</td>
+        <td>{{ post['camaGCOc'] }}</td>
+        <td>{{ post['pacAlta'] }}</td>
+        <td>{{ post['pacCOVIDAlta'] }}</td>
+        <td>{{ post['pacFall'] }}</td>
+        <td>{{ post['pacCOVIDFall'] }}</td>
+        <td>{{ post['pacUTI'] }}</td>
+        <td>{{ post['pacCOVIDUTI'] }}</td>
 
-      </header>
-      <p class="body">{{ post['fecha'] }}</p>
+      </tr>
     </article>
     {% if not loop.last %}
       <hr>
     {% endif %}
   {% endfor %}
+  </table>
+</font>
 {% endblock %}
