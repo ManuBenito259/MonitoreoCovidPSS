@@ -19,22 +19,19 @@ def storeData(file):
     df = pd.read_excel(file, 'Sheet1')
     db = get_db()
     rows = df.shape[0]  # obtiene el numero de filas (sin contar el encabezado)
-
     for i in range(rows):
-        lista = df.loc[i].tolist()  # convierte en lista el contenido de una fila y lo m
-
+        lista = df.loc[i].tolist()  # convierte en lista el contenido de una fila
         print(lista)
         print(str(lista[1]))
         print(type(lista[1]))
-        db.commit()
-
-
         db.execute(
             'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
             ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            (int(lista[0]), str(lista[1]), str(lista[2]), lista[3], lista[4], lista[5], lista[6], lista[7], lista[8], lista[9],
-             lista[10], lista[11], lista[12], lista[13])  # TODO: placeholder
+            (int(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]), str(lista[5]), str(lista[6]), str(lista[7]), str(lista[8]), str(lista[9]),
+             str(lista[10]), str(lista[11]), str(lista[12]), str(lista[13]))  # TODO: placeholder
         )
+        db.commit()
+        print(i)
 
 
 @bp.route('/', methods=('GET', 'POST'))
