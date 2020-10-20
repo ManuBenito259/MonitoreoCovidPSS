@@ -24,11 +24,9 @@
     <th>Pacientes con COVID fallecidos de UTI</th>
     <th>Pacientes con COVID derivados en UTI</th>
     <th>Pacientes derivados en UTI</th>
-
   </tr>
 
   {% for post in posts %}
-    <article class="post">
       <tr>
         <td>{{ post['centroSalud'] }}</td>
         <td>{{ post['fecha'] }}</td>
@@ -46,10 +44,6 @@
         <td>{{ post['pacCOVIDUTI'] }}</td>
 
       </tr>
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
   {% endfor %}
   </table>
 </font>
