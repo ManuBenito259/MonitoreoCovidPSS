@@ -53,21 +53,47 @@ def upload():
             flash('Succesfull upload')
             return redirect(url_for('upload.upload'))
     if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
+
         centroSalud = request.form['centroSalud']
         fecha = request.form['fecha']
         respiradoresDisp= request.form['respiradoresDisponibles']
+        respiradoresOc = request.form['respiradoresOcupados']
+        camaUTIDisp = request.form['camasUTIDisponibles']
+        camaUTIOc = request.form['camasUTIOcupadas']
+        camaGCDisp = request.form['camasGCDisponibles']
+        camaGCOc = request.form['camasGCOcupadas']
+
+        pacAlta = request.form['pacientesAltaUTI']
+        pacCOVIDAlta = request.form['pacientesCovidAltaUTI']
+        pacFall = request.form['pacientesFallecidosUTI']
+        pacCOVIDFall = request.form['pacientesCovidFallecidosUTI']
+        pacCOVIDUTI = request.form['pacientesCovidDerivadosUTI']
+        pacUTI = request.form['pacientesDerivadosUTI']
+
         db = get_db()
         error = None
 
         if not centroSalud:
             error = 'Centro de Salud is required.'
         elif not fecha:
-            error = 'fecha is required.'
+            error = 'Fecha is required.'
+        elif not respiradoresDisp:
+            error = 'Respiradores Disponibles is required'
+        elif not respiradoresOc:
+            error = 'Respiradores Ocupados is required'
+        elif not camaUTIDisp:
+            error = 'Respiradores UTI Disponibles is required'
+        elif not camaUTIOc:
+            error = 'Respiradores UTI Ocupados is required'
+        elif not camaGCDisp:
+            error = 'Camas GC Disponibles is required'
+        elif not camaGCOc:
+            error = 'Camas GC Ocupadas is requiered'
 
         if error is None:
             db.execute(
                 'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
-                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',(centroSalud,fecha,respiradoresDisp,5,5,5,5,5,5,5,5,5,5,5) #TODO
+                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',(centroSalud,fecha,respiradoresDisp,respiradoresOc,camaUTIDisp,camaUTIOc,camaGCDisp,camaGCOc,pacAlta,pacCOVIDAlta,pacFall,pacCOVIDFall,pacCOVIDUTI,pacUTI)
             )
             db.commit()
             flash('Formulario cargado exitosamente')
