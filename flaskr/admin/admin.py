@@ -3,6 +3,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from flaskr.auth import admin_login_required
 from flaskr.database.db import get_db
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -11,27 +12,20 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @bp.route('/index')
+@admin_login_required
 def admin_index():
     db = get_db()
-    uploader_users = db.execute(
+    users = db.execute(
         'SELECT *'
-        ' FROM uploader_user'
+        ' FROM users'
     ).fetchall()
 
-    read_users = db.execute(
-        'SELECT *'
-        ' FROM viewer_user'
-    ).fetchall()
 
-    admins = db.execute(
-        'SELECT *'
-        ' FROM admin'
-    ).fetchall()
-
-    return render_template('admin/index.html', read_users=read_users)
+    return render_template('admin/index.html', users=users)
 
 
 @bp.route('/register_uploader', methods=('GET', 'POST'))
+@admin_login_required
 def uploaderRegister():
     if request.method == 'POST':
         username = request.form['username']
@@ -44,14 +38,14 @@ def uploaderRegister():
         elif not password:
             error = 'Password is required.'
         elif db.execute(
-                'SELECT id FROM uploader_user WHERE username = ?', (username,)
+                'SELECT id FROM users WHERE username = ?', (username,)
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
             db.execute(
-                'INSERT INTO uploader_user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
+                'INSERT INTO users (username, password, type) VALUES (?, ?, ?)',
+                (username, generate_password_hash(password), "uploader")
             )
             db.commit()
             return redirect(url_for('admin.admin_index'))
@@ -61,6 +55,7 @@ def uploaderRegister():
     return render_template('admin/uploader_register.html')
 
 @bp.route('/register_viewer', methods=('GET', 'POST'))
+@admin_login_required
 def viewerRegister():
     if request.method == 'POST':
         username = request.form['username']
@@ -73,14 +68,14 @@ def viewerRegister():
         elif not password:
             error = 'Password is required.'
         elif db.execute(
-                'SELECT id FROM viewer_user WHERE username = ?', (username,)
+                'SELECT id FROM users WHERE username = ?', (username,)
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
             db.execute(
-                'INSERT INTO viewer_user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
+                'INSERT INTO users (username, password, type) VALUES (?, ?, ?)',
+                (username, generate_password_hash(password), "viewer")
             )
             db.commit()
             return redirect(url_for('admin.admin_index'))
@@ -90,6 +85,7 @@ def viewerRegister():
     return render_template('admin/viewer_register.html')
 
 @bp.route('/register_admin', methods=('GET', 'POST'))
+@admin_login_required
 def adminRegister():
     if request.method == 'POST':
         username = request.form['username']
@@ -102,14 +98,14 @@ def adminRegister():
         elif not password:
             error = 'Password is required.'
         elif db.execute(
-                'SELECT id FROM admin WHERE username = ?', (username,)
+                'SELECT id FROM users WHERE username = ?', (username,)
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
             db.execute(
-                'INSERT INTO admin (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
+                'INSERT INTO users (username, password, type) VALUES (?, ?, ?)',
+                (username, generate_password_hash(password), "admin")
             )
             db.commit()
             return redirect(url_for('admin.admin_index'))

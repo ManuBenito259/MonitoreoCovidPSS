@@ -18,7 +18,7 @@ def viewer_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM viewer_user WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -44,7 +44,7 @@ def uploader_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM uploader_user WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -70,7 +70,7 @@ def admin_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM admin WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -88,7 +88,7 @@ def admin_login():
     return render_template('auth/admin_login.html')
 
 
-@bp.before_app_request  #TODO: mayor bug on users credentials administration
+@bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
 
@@ -96,46 +96,13 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM viewer_user WHERE id = ?', (user_id,)
-        ).fetchone()
-
-        if g.user is None:
-            g.user = get_db().execute(
-            'SELECT * FROM uploader_user WHERE id = ?', (user_id,)
-            ).fetchone()
-
-            if g.user is None:
-                g.user = get_db().execute(
-                    'SELECT * FROM admin WHERE id = ?', (user_id,)
-                ).fetchone()
-
-
-def load_logged_in_viewer_user(user_id):
-    g.user = get_db().execute(
-        'SELECT * FROM viewer_user WHERE id = ?', (user_id,)
-    ).fetchone()
-
-
-def load_logged_in_uploader_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = get_db().execute(
-            'SELECT * FROM uploader_user WHERE id = ?', (user_id,)
+            'SELECT * FROM users WHERE id = ?', (user_id,)
         ).fetchone()
 
 
-def load_logged_in_admin():
-    user_id = session.get('user_id')
 
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = get_db().execute(
-            'SELECT * FROM admin WHERE id = ?', (user_id,)
-        ).fetchone()
+
+
 
 
 @bp.route('/logout')
@@ -148,8 +115,9 @@ def viewer_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for('auth.login'))
-
+            return redirect(url_for('auth.viewer_login'))
+        if g.user['type'] != "viewer":
+            return redirect(url_for('auth.viewer_login'))
         return view(**kwargs)
 
     return wrapped_view
@@ -159,19 +127,20 @@ def uploader_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for('auth.uplaoder_login'))
-
+            return redirect(url_for('auth.uploader_login'))
+        if g.user['type'] != "uploader":
+            return redirect(url_for('auth.upladoer_login'))
         return view(**kwargs)
 
     return wrapped_view
-
 
 def admin_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.admin_login'))
-
+        if g.user['type'] != "admin":
+            return redirect(url_for('auth.admin_login'))
         return view(**kwargs)
 
     return wrapped_view

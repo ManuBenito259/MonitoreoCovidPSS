@@ -11,12 +11,13 @@
 
 {% block content %}
   {# read users #}
-  {% for user in read_users %}
+  {% for user in users %}
     <article class="read_user">
       <header>
         <div>
           <h1>{{ user['id'] }}</h1>
-          <div class="about">by {{ user['username'] }} }</div>
+          <div class="about">username: {{ user['username']}}</div>
+          <div class="about">user type: {{ user['type']}}</div>
         </div>
 
       </header>
@@ -25,6 +26,7 @@
       <hr>
     {% endif %}
   {% endfor %}
+
 
 
 {% endblock %}

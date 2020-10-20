@@ -30,10 +30,9 @@ def close_db(e=None):
 
 
 def create_admin(db):
-    db.execute('INSERT INTO admin (username, password) VALUES (?,?)',
-               ("admin", generate_password_hash("admin")))
+    db.execute('INSERT INTO users (username, password, type) VALUES (?,?,?)',
+               ("admin", generate_password_hash("admin"), "admin"))
     db.commit()
-
 
 def init_db():
     db = get_db()
