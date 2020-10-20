@@ -37,7 +37,7 @@ def storeData(file):
 @bp.route('/', methods=('GET', 'POST'))
 @uploader_login_required
 def upload():
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form['submitButton'] == 'UploadFile':
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
@@ -52,7 +52,25 @@ def upload():
             storeData(file)
             flash('Succesfull upload')
             return redirect(url_for('upload.upload'))
+    if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
+        centroSalud = request.form['centroSalud']
+        fecha = request.form['fecha']
+        respiradoresDisp= request.form['respiradoresDisponibles']
+        db = get_db()
+        error = None
 
+        if not centroSalud:
+            error = 'Centro de Salud is required.'
+        elif not fecha:
+            error = 'fecha is required.'
+
+        if error is None:
+            db.execute(
+                'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
+                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',(centroSalud,fecha,respiradoresDisp,5,5,5,5,5,5,5,5,5,5,5) #TODO
+            )
+            db.commit()
+            flash('Formulario cargado exitosamente')
     return render_template('uploader/uploadFile.html')
 
 
