@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}System Users{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('admin.uploaderRegister') }}">New Uploader</a>
+    <a class="action" href="{{ url_for('admin.viewerRegister') }}">New Viewer</a>
+    <a class="action" href="{{ url_for('admin.adminRegister') }}">New Admin</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {# read users #}
+  {% for user in users %}
+    <article class="read_user">
+      <header>
+        <div>
+          <h1>{{ user['id'] }}</h1>
+          <div class="about">username: {{ user['username']}}</div>
+          <div class="about">user type: {{ user['type']}}</div>
+        </div>
+
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+
+
+
+{% endblock %}
+
+
