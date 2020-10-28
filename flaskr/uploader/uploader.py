@@ -53,7 +53,7 @@ def upload():
             flash('Succesfull upload')
             return redirect(url_for('upload.upload'))
     if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
-        centroSalud = request.form['centroSalud']
+        centroSalud = request.form['centroSalud']  #TODO: El centro de salud deberia obtenerse a partir de el usuario logueado para evitar inconsistencias
         fecha = request.form['fecha']
         respiradoresDisp= request.form['respiradoresDisponibles']
         db = get_db()
