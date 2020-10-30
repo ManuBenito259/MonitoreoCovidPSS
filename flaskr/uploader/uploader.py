@@ -57,8 +57,15 @@ def upload():
         fecha = request.form['fecha']
         respiradoresDisp= request.form['respiradoresDisponibles']
         db = get_db()
+
         error = None
 
+        fechaDB = db.execute(
+            'SELECT DISTINCT fecha FROM cargaDiaria WHERE centroSalud = ? AND fecha = ?', (centroSalud,fecha,)
+        ).fetchone()
+
+        if (fechaDB != None):
+            error = 'El centro de salud '+centroSalud+' ya realizó una carga el día de hoy'
         if not centroSalud:
             error = 'Centro de Salud is required.'
         elif not fecha:
@@ -71,6 +78,9 @@ def upload():
             )
             db.commit()
             flash('Formulario cargado exitosamente')
+        else:
+            flash(error)
+    #TODO: los campos deberían volver a estar vacíos
     return render_template('uploader/uploadFile.html')
 
 
