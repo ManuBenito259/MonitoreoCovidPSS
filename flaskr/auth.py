@@ -129,7 +129,7 @@ def uploader_login_required(view):
         if g.user is None:
             return redirect(url_for('auth.uploader_login'))
         if g.user['type'] != "uploader":
-            return redirect(url_for('auth.upladoer_login'))
+            return redirect(url_for('auth.uploader_login'))
         return view(**kwargs)
 
     return wrapped_view
