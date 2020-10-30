@@ -79,6 +79,8 @@ def upload():
         if (fechaDB != None):
             error = 'El centro de salud '+centroSalud+' ya realizó una carga el día de hoy'
 
+        if (int(respiradoresDisp) < 0) or (int(respiradoresOc) < 0) or (int(camaUTIDisp) < 0) or (int(camaUTIOc) < 0) or (int(camaGCDisp) < 0) or (int(camaGCOc) < 0) or (int(pacAlta) < 0) or (int(pacCOVIDAlta) < 0) or (int(pacFall) < 0) or (int(pacCOVIDFall) < 0) or (int(pacCOVIDUTI) < 0) or (int(pacUTI) < 0):
+            error = 'ERROR: No es posible cargar valores negativos'
         if error is None:
             db.execute(
                 'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
