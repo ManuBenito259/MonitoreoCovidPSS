@@ -27,7 +27,7 @@ def storeData(file):
         db.execute(
             'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
             ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            (int(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]), str(lista[5]), str(lista[6]), str(lista[7]), str(lista[8]), str(lista[9]),
+            (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]), str(lista[5]), str(lista[6]), str(lista[7]), str(lista[8]), str(lista[9]),
              str(lista[10]), str(lista[11]), str(lista[12]), str(lista[13]))  # TODO: placeholder
         )
         db.commit()
@@ -56,6 +56,18 @@ def upload():
         centroSalud = request.form['centroSalud']  #TODO: El centro de salud deberia obtenerse a partir de el usuario logueado para evitar inconsistencias
         fecha = request.form['fecha']
         respiradoresDisp= request.form['respiradoresDisponibles']
+        respiradoresOc = request.form['respiradoresOcupados']
+        camaUTIDisp = request.form['camasUTIDisponibles']
+        camaUTIOc = request.form['camasUTIOcupadas']
+        camaGCDisp = request.form['camasGCDisponibles']
+        camaGCOc = request.form['camasGCOcupadas']
+        pacAlta = request.form['pacientesAltaUTI']
+        pacCOVIDAlta = request.form['pacientesCovidAltaUTI']
+        pacFall = request.form['pacientesFallecidosUTI']
+        pacCOVIDFall = request.form['pacientesCovidFallecidosUTI']
+        pacCOVIDUTI = request.form['pacientesCovidDerivadosUTI']
+        pacUTI = request.form['pacientesDerivadosUTI']
+
         db = get_db()
 
         error = None
@@ -66,15 +78,11 @@ def upload():
 
         if (fechaDB != None):
             error = 'El centro de salud '+centroSalud+' ya realizó una carga el día de hoy'
-        if not centroSalud:
-            error = 'Centro de Salud is required.'
-        elif not fecha:
-            error = 'fecha is required.'
 
         if error is None:
             db.execute(
                 'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
-                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',(centroSalud,fecha,respiradoresDisp,5,5,5,5,5,5,5,5,5,5,5) #TODO
+                ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',(centroSalud,fecha,respiradoresDisp,respiradoresOc,camaUTIDisp,camaUTIOc,camaGCDisp,camaGCOc,pacAlta,pacCOVIDAlta,pacFall,pacCOVIDFall,pacCOVIDUTI,pacUTI)
             )
             db.commit()
             flash('Formulario cargado exitosamente')
