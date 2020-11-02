@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Ubicaciones{% endblock %}</h1>
+
+{% endblock %}
+
+{% block content %}
+  {# read users #}
+  {% for ubicacion in ubicaciones %}
+    <article class="ubicacion">
+      <header>
+        <div>
+          <h1>{{ ubicacion['ciudad'] }}</h1>
+          <div class="about">Provincia: {{ ubicacion['provincia']}}</div>
+          <div class="about">Codigo postal:  {{ ubicacion['cp']}}</div>
+        </div>
+
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+
+
+
+{% endblock %}
+
+

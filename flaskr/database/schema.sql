@@ -17,7 +17,7 @@ CREATE TABLE centroSalud(
     ubicacion INTEGER NOT NULL,
     direccion VARCHAR(45) NOT NULL,
     mail VARCHAR(50) NOT NULL,
-    responsable INTEGER NOT NULL,
+    responsable INTEGER, /*TODO: quickfix, solve when all tables are functional*/
     telefono INTEGER NOT NULL,
     publico BOOLEAN NOT NULL,
 
@@ -25,10 +25,13 @@ CREATE TABLE centroSalud(
     PRIMARY KEY (id),
 
     CONSTRAINT fk_centroSalud_ubicacion
-    FOREIGN KEY (ubicacion) REFERENCES ubicacion(cp),
+    FOREIGN KEY (ubicacion) REFERENCES ubicacion(cp)
 
+    /*
     CONSTRAINT fk_centroSalud_usuarioCarga
     FOREIGN KEY (responsable) REFERENCES usuarioCarga(dni)
+
+     */
 );
 
 CREATE TABLE ubicacion(

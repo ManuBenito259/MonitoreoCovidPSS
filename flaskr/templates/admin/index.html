@@ -3,9 +3,11 @@
 {% block header %}
   <h1>{% block title %}System Users{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('admin.uploaderRegister') }}">New Uploader</a>
-    <a class="action" href="{{ url_for('admin.viewerRegister') }}">New Viewer</a>
-    <a class="action" href="{{ url_for('admin.adminRegister') }}">New Admin</a>
+    <a class="action" href="{{ url_for('admin.uploaderRegister') }}">Nuevo uploader</a>
+    <a class="action" href="{{ url_for('admin.viewerRegister') }}">Nuevo viewer</a>
+    <a class="action" href="{{ url_for('admin.adminRegister') }}">Nuevo administrador</a>
+    <a class="action" href="{{ url_for('admin.uploadLocation') }}">Nueva ubicacion</a>
+    <a class="action" href="{{ url_for('admin.locations') }}">Ubicaciones</a>
   {% endif %}
 {% endblock %}
 
@@ -15,9 +17,8 @@
     <article class="read_user">
       <header>
         <div>
-          <h1>{{ user['id'] }}</h1>
-          <div class="about">username: {{ user['username']}}</div>
-          <div class="about">user type: {{ user['type']}}</div>
+          <h1>{{ user['username'] }}</h1>
+          <div class="about">{{ user['type']}}</div>
         </div>
 
       </header>
