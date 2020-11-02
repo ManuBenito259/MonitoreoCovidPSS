@@ -12,8 +12,12 @@
     <h1>Formulario de Carga Diaria</h1>
     <h4>Los campos con (*) son obligatorios</h4>
     <form method="post">
-      <label for="centroSalud">Centro de Salud (*)</label>
-      <input name="centroSalud" id="centroSalud" value="{{ request.form['centroSalud'] }}" required>
+      <label for="centroSalud">Centro de Salud</label>
+      <select type="centroSalud" name="centroSalud"  id="centroSalud" required>
+        {%for centro in centros%}
+            <option value= "{{centro['nombre']}}" >{{centro['nombre']}} </option>
+        {%endfor%}
+      </select>
 
       <label for="fecha">Fecha (*)</label>
       <FONT SIZE=2>Ejemplo: 18/09/1999</font>

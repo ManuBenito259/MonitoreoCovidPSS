@@ -159,3 +159,66 @@ def locations():
     print(len(ubicaciones))
 
     return render_template('admin/ubicaciones.html', ubicaciones=ubicaciones)
+
+
+@bp.route('/upload_centro', methods=('GET', 'POST'))
+@admin_login_required
+def uploadCentro():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        print(request.form['ubicacion'])
+        ubicacion = request.form['ubicacion']
+        direccion = request.form['direccion']
+        mail = request.form['mail']
+        telefono = request.form['telefono']
+        publico = request.form['publico']
+        db = get_db()
+        error = None
+
+        if not nombre:
+            error = 'Ingrese el Nombre del Centro de Salud.'
+        elif not ubicacion:
+            error = 'Ingrese la ubicacion.'
+        elif not mail:
+            error = 'Ingrese un mail'
+        elif not telefono:
+            error = 'Ingrese un telefono'
+        elif not direccion:
+            error = 'Ingrese una direccion'
+        elif not publico:
+            error = 'Indique si el centro de salud es publico'
+
+        elif db.execute(
+                'SELECT id FROM centroSalud WHERE nombre = ? AND ubicacion = ?', (nombre, ubicacion)
+        ).fetchone() is not None:
+            error = 'El hospital {} ya fue cargado.'.format(nombre)
+
+        if error is None:
+            db.execute(
+                'INSERT INTO centroSalud (nombre, ubicacion, direccion, mail, telefono, publico) VALUES (?, ?, ?, ?, ?, ?)',
+                (nombre, ubicacion, direccion, mail, telefono, publico)
+            )
+            db.commit()
+            return redirect(url_for('admin.centrosSalud'))
+
+        flash(error)
+
+    db = get_db()
+    ubicaciones = db.execute(
+        'SELECT *'
+        ' FROM ubicacion'
+    ).fetchall()
+
+    return render_template('admin/upload_centro.html', ubicaciones=ubicaciones)
+
+
+@bp.route('/centros_salud')
+@admin_login_required
+def centrosSalud():
+    db = get_db()
+    centros = db.execute(
+        'SELECT *'
+        ' FROM centroSalud'  # TODO: extender la query para obtener informacion relveante de la ubicacion
+    ).fetchall()
+
+    return render_template('admin/centros_salud.html', centros=centros)

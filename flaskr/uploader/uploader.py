@@ -91,7 +91,13 @@ def upload():
         else:
             flash(error)
     #TODO: los campos deberían volver a estar vacíos
-    return render_template('uploader/uploadFile.html')
+
+    db = get_db()
+    centros = db.execute(
+        'SELECT *'
+        ' FROM centroSalud'
+    ).fetchall()
+    return render_template('uploader/uploadFile.html', centros=centros)
 
 
 def allowed_file(filename):

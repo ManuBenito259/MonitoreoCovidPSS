@@ -7,7 +7,11 @@
 {% block content %}
   <form method="post">
     <label for="centroSalud">Centro de Salud</label>
-    <input name="centroSalud" id="centroSalud" value="{{ request.form['centroSalud'] }}" required>
+    <select type="centroSalud" name="centroSalud" id=centroSalud required>
+        {%for centro in centros%}
+            <option value= "{{centro['nombre']}}" >{{centro['nombre']}}, {{centro['ciudad']}} </option>
+        {%endfor%}
+    </select>
 
     <label for="fecha">Fecha</label>
     <input name="fecha" id="fecha" value="{{ request.form['fecha'] }}" required>
