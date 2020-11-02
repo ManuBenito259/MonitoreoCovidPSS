@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Nueva Ubicacion{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="codigoPostal">Codigo Postal</label>
+    <input name="codigoPostal" id="codigoPostal" required>
+    <label for="provincia">Provincia</label>
+    <input type="provincia" name="provincia" id="provincia" required>
+    <label for="ciudad">Ciudad</label>
+    <input type="ciudad" name="ciudad" id="ciudad" required>
+    <input type="submit" value="Subir">
+  </form>
+{% endblock %}
