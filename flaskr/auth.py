@@ -51,7 +51,7 @@ def uploader_login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('upload.upload'))
+            return redirect(url_for('upload.uploadDatosHospital'))
 
         flash(error)
 

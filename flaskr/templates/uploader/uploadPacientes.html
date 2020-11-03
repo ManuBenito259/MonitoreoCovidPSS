@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Datos paciente{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit name=submitButton value='SubirArchivo'>
+    </form>
+    <h1>Formulario de paciente</h1>
+    <h4>Los campos con (*) son obligatorios</h4>
+    <form method="post">
+      <label for="dni">DNI (*)</label>
+      <input name="dni" id="dni" value="{{ request.form['dni'] }}">
+
+      <label for="nombre">Nombre (*)</label>
+      <input name="nombre" id="nombre" value="{{ request.form['nombre'] }}">
+
+      <label for="apellido">Apellido (*)</label>
+      <input name="apellido" id="apellido" value="{{ request.form['apellido'] }}">
+
+      <label for="telefono">Telefono</label>
+      <input name="telefono" id="telefono" value="{{ request.form['telefono'] }}">
+
+      <select type="estado" name="estado" id="estado" required>
+        <option value= "InternadoClinico" >Clinico </option>
+        <option value= "InternadoCovid" >Covid </option>
+
+        </select>
+
+
+
+      <input type=submit name=submitButton value='CargarPaciente'>
+      <input type=submit name=submitButton value='Finalizar'>
+    </form>
+
+{% endblock %}

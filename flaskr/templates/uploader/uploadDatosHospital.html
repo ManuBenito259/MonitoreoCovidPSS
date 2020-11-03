@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Upload file{% endblock %}</h1>
+  <h1>{% block title %}Carga diaria{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
-      <input type=submit name=submitButton value='UploadFile'>
+      <input type=submit name=submitButton value='Subir Archivo'>
     </form>
     <h1>Formulario de Carga Diaria</h1>
     <h4>Los campos con (*) son obligatorios</h4>
@@ -22,7 +22,7 @@
       <label for="fecha">Fecha (*)</label>
       <FONT SIZE=2>Ejemplo: 18/09/1999</font>
       <input name="fecha" id="fecha" value="{{ request.form['fecha'] }}" required>
-      
+
 
       <label for="respiradoresDisponibles">Respiradores disponibles (*)</label>
       <input name="respiradoresDisponibles" id="respiradoresDisponibles" value="{{ request.form['respiradoresDisponibles'] }}" required>
@@ -41,24 +41,6 @@
 
       <label for="camasGCOcupadas">Camas con gases centrales ocupadas (*)</label>
       <input name="camasGCOcupadas" id="camasGCOcupadas" value="{{ request.form['camasGCOcupadas'] }}" required>
-
-      <label for="pacientesAltaUTI">Pacientes dados de alta de la Unidad de Terapia Intensiva (*)</label>
-      <input name="pacientesAltaUTI" id="pacientesAltaUTI" value="{{ request.form['pacientesAltaUTI'] }}" >
-
-      <label for="pacientesCovidAltaUTI">Pacientes con COVID dados de alta de la Unidad de Terapia Intensiva (*)</label>
-      <input name="pacientesCovidAltaUTI" id="pacientesCovidAltaUTI" value="{{ request.form['pacientesCovidAltaUTI'] }}">
-
-      <label for="pacientesFallecidosUTI">Pacientes fallecidos de la Unidad de Terapia Intensiva (*)</label>
-      <input name="pacientesFallecidosUTI" id="pacientesFallecidosUTI" value="{{ request.form['pacientesFallecidosUTI'] }}"git>
-
-      <label for="pacientesCovidFallecidosUTI">Pacientes con COVID fallecidos de la Unidad de Terapia Intensiva (*)</label>
-      <input name="pacientesCovidFallecidosUTI" id="pacientesCovidFallecidosUTI" value="{{ request.form['pacientesCovidFallecidosUTI'] }}">
-
-      <label for="pacientesCovidDerivadosUTI">Pacientes con COVID derivados en la Unidad de Terapia Intensiva (*)</label>
-      <input name="pacientesCovidDerivadosUTI" id="pacientesCovidDerivadosUTI" value="{{ request.form['pacientesCovidDerivadosUTI'] }}">
-
-      <label for="pacientesDerivadosUTI">Pacientes derivados en la Unidad de Terapia Intensiva (*)</label>
-      <input name="pacientesDerivadosUTI" id="pacientesDerivadosUTI" value="{{ request.form['pacientesDerivadosUTI'] }}">
 
       <input type=submit name=submitButton value='SaveCarga'>
     </form>
