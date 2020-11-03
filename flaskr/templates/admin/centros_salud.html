@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Ubicaciones{% endblock %}</h1>
+  <h1>{% block title %}Centros de Salud{% endblock %}</h1>
 
 {% endblock %}
 
@@ -18,7 +18,10 @@
           <div class="about">Telefono:  {{ centro['telefono']}}</div>
           <div class="about">Publico:  {{ centro['publico']}}</div>
         </div>
-
+        <form action="{{ url_for('admin.deleteCentro', id=centro['nombre'])}}" method="post">
+          <input class="danger" type="submit" value="Eliminar" onclick="return confirm('Are you sure?');">
+        </form>
+        <input class="action" type="submit" value="Editar">
       </header>
     </article>
     {% if not loop.last %}

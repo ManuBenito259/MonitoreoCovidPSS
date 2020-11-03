@@ -222,3 +222,18 @@ def centrosSalud():
     ).fetchall()
 
     return render_template('admin/centros_salud.html', centros=centros)
+
+@bp.route('/<string:id>/deleteCentro', methods=('GET', 'POST'))
+@admin_login_required
+def deleteCentro(id):
+    db = get_db()
+
+    db.execute('DELETE FROM centroSalud WHERE nombre = ?',(id,)).fetchall()
+    db.commit()
+
+    flash("Se eliminó el centro de salud: "+id)
+    centros = db.execute(
+        'SELECT *'
+        ' FROM centroSalud' 
+    ).fetchall()
+    return render_template('admin/centros_salud.html', centros=centros)
