@@ -24,7 +24,7 @@ def storeData(file):
         (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]), str(lista[5]), str(lista[6]),
         str(lista[7]), 0,0,0,0,0,0,0,0)  # TODO: placeholder
     )
-    idCarga = db.execute('SELECT id FROM cargaDiaria WHERE centroSalud = ? AND fecha = ?', (str(lista[0]), str(lista[1])))
+    idCarga = db.execute('SELECT last_insert_id(cargaDiaria)')
     db.commit()
     return idCarga
 
@@ -94,7 +94,7 @@ def uploadDatosHospital():
             session['carga']['pacUTI'] = 0
 
 
-            return redirect(url_for('upload.uploadPacientes'))
+            return redirect(url_for('upload.uploadPacientes', id = 0))
         else:
             flash(error)
     # TODO: los campos deberían volver a estar vacíos
@@ -144,7 +144,7 @@ def uploadPacientes(id):
         if file and allowed_file(file.filename):
             storePacientes(file,id)
             flash('Succesfull upload')
-            return redirect(url_for('upload.uploadPacientes'))
+            return redirect(url_for('upload.uploadPacientes', id = id))
 
     elif request.method == 'POST':
         dni = request.form['dni']
@@ -172,12 +172,12 @@ def uploadPacientes(id):
             session['carga']['pacCovidNuevos'] = (1 + int(session['carga']['pacCovidNuevos']))
 
         if request.form['submitButton'] == 'CargarPaciente':
-            return redirect(url_for('upload.uploadPacientes'))
+            return redirect(url_for('upload.uploadPacientes', id = 0))
 
         if request.form['submitButton'] == 'Finalizar':
             return redirect(url_for('upload.uploadEstadoPacientes'))
 
-    return render_template('uploader/uploadPacientes.html')
+    return render_template('uploader/uploadPacientes.html', id=id)
 
 
 @bp.route('/estadoPacientes', methods=('GET', 'POST'))
