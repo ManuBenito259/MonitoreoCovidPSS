@@ -15,26 +15,17 @@ def storeData(file):
     df = pd.read_excel(file, 'Sheet1')
     db = get_db()
     rows = df.shape[0]  # obtiene el numero de filas (sin contar el encabezado)
-
-    lista = df.loc[0].tolist()  # convierte en lista el contenido de una fila
-    session['carga'] = {}
-    session['carga']['centro'] = lista[0]
-    session['carga']['camaGCDisp'] = lista[6]
-    session['carga']['camaGCOc'] = lista[7]
-    session['carga']['camaUTIOc'] = lista[5]
-    session['carga']['camaUTIDisp'] = lista[4]
-    session['carga']['respiradoresDisp'] = lista[2]
-    session['carga']['respiradoresOc'] = lista[3]
-    session['carga']['fecha'] = lista[1]
-    session['carga']['centroSalud'] = lista[0]
-    session['carga']['pacNuevos'] = 0
-    session['carga']['pacCovidNuevos'] = 0
-    session['carga']['pacFall'] = 0
-    session['carga']['pacCovidFall'] = 0
-    session['carga']['pacAlta'] = 0
-    session['carga']['pacCovidAlta'] = 0
-    session['carga']['pacCovidUTI'] = 0
-    session['carga']['pacUTI'] = 0
+    for i in range(rows):
+        lista = df.loc[i].tolist()  # convierte en lista el contenido de una fila
+        db.execute(
+            'INSERT INTO cargaDiaria(centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacNuevos, pacCovidNuevos, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
+            'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]),
+             str(lista[5]), str(lista[6]), str(lista[7]), str(lista[8]), str(lista[9]),
+             str(lista[10]), str(lista[11]), str(lista[12]), str(lista[13]), str(lista[14]),
+             str(lista[15]))  # TODO: placeholder
+        ).fetchall()
+        db.commit()
 
 
 @bp.route('/datosHospital', methods=('GET', 'POST'))
@@ -55,7 +46,7 @@ def uploadDatosHospital():
         if file and allowed_file(file.filename):
             storeData(file)
             flash('Succesfull upload')
-            return redirect(url_for('upload.upload'))
+            return redirect(url_for('upload.uploadDatosHospital'))
 
     #Carga manual
     if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
@@ -121,42 +112,11 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def storePacientes(file):
-    df = pd.read_excel(file, 'Sheet1')
-    db = get_db()
-    rows = df.shape[0]  # obtiene el numero de filas (sin contar el encabezado)
-
-    lista = df.loc[0].tolist()  # convierte en lista el contenido de una fila
-
-    db.execute(
-        'UPDATE cargaDiaria SET pacNuevos = ?, pacCovidNuevos = ?, pacAlta = ?, pacCOVIDAlta = ?, pacFall = ?, pacCOVIDFall = ?, pacCOVIDUTI = ?, pacUTI = ?'
-        'WHERE id = ?',
-        (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]),
-         str(lista[5]), str(lista[6]), str(lista[7]), id)  # TODO: placeholder
-    )
-    db.commit()
-
-
 @bp.route('/datosPacientes', methods=('GET', 'POST'))
 @uploader_login_required
 def uploadPacientes():
-    if request.method == 'POST' and request.form['submitButton'] == 'SubirArchivo':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return url_for(uploadDatosHospital.upload)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            storePacientes(file, id)
-            flash('Succesfull upload')
-            return redirect(url_for('upload.uploadPacientes', id=id))
 
-    elif request.method == 'POST':
+    if request.method == 'POST':
         dni = request.form['dni']
         nombre = request.form['nombre']
         apellido = request.form['apellido']
