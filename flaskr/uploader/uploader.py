@@ -119,10 +119,10 @@ def storePacientes(file,id):
     lista = df.loc[0].tolist()  # convierte en lista el contenido de una fila
     
     db.execute(
-        'UPDATE cargaDiaria SET pacAlta = ?, pacCOVIDAlta = ?, pacFall = ?, pacCOVIDFall = ?, pacCOVIDUTI = ?, pacUTI = ?'
+        'UPDATE cargaDiaria SET pacNuevos = ?, pacCovidNuevos = ?, pacAlta = ?, pacCOVIDAlta = ?, pacFall = ?, pacCOVIDFall = ?, pacCOVIDUTI = ?, pacUTI = ?'
         'WHERE id = ?',
         (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]),
-        str(lista[5]), id)  # TODO: placeholder
+        str(lista[5]), str(lista[6]), str(lista[7]), id)  # TODO: placeholder
     )
     db.commit()
 
