@@ -6,18 +6,19 @@
 
 {% block content %}
   <h3>{{ name }}</h3>
+  <h4>Los campos con (*) son obligatorios</h4>
   <form method="post">
-    <label for="nombre">Nombre</label>
-    <input name="nombre" id="nombre">
+    <label for="nombre">Nombre (*)</label>
+    <input name="nombre" id="nombre" required>
 
-    <label for="direccion">Direccion</label>
-    <input name="direccion" id="direccion">
+    <label for="direccion">Direccion (*)</label>
+    <input name="direccion" id="direccion" required>
 
-    <label for="mail">Mail</label>
-    <input name="mail" id="mail">
+    <label for="mail">Mail (*)</label>
+    <input name="mail" id="mail" required>
 
-    <label for="telefono">Telefono</label>
-    <input name="telefono" id="telefono">
+    <label for="telefono">Telefono (*)</label>
+    <input name="telefono" id="telefono" required>
 
     <input type="submit" value="Aceptar" method="post">
   </form>
