@@ -237,3 +237,23 @@ def deleteCentro(id):
         ' FROM centroSalud' 
     ).fetchall()
     return render_template('admin/centros_salud.html', centros=centros)
+
+@bp.route('/<string:id>/editar_centro', methods=('GET', 'POST'))
+@admin_login_required
+def editCentro(id):
+    if request.method == 'POST':
+        nombre = request.form.get('nombre')
+        direccion = request.form.get('direccion')
+        mail = request.form.get('mail')
+        telefono = request.form.get('telefono')
+
+        db=get_db()
+
+        idCentro=db.execute('SELECT id FROM centroSalud WHERE nombre = ?',(id,))
+
+        #TODO: update base de datos
+
+        return redirect(url_for('admin.centrosSalud'))
+
+
+    return render_template('admin/editar_centro.html', name=id)

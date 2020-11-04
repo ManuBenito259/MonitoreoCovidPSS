@@ -21,7 +21,9 @@
         <form action="{{ url_for('admin.deleteCentro', id=centro['nombre'])}}" method="post">
           <input class="danger" type="submit" value="Eliminar" onclick="return confirm('Are you sure?');">
         </form>
-        <input class="action" type="submit" value="Editar">
+        <form action="{{ url_for('admin.editCentro', id=centro['nombre'])}}">
+          <input type="submit" value="Editar">
+        </form>
       </header>
     </article>
     {% if not loop.last %}

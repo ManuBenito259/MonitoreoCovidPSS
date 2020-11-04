@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Editar Centro de Salud{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <h3>{{ name }}</h3>
+  <form method="post">
+    <label for="nombre">Nombre</label>
+    <input name="nombre" id="nombre">
+
+    <label for="direccion">Direccion</label>
+    <input name="direccion" id="direccion">
+
+    <label for="mail">Mail</label>
+    <input name="mail" id="mail">
+
+    <label for="telefono">Telefono</label>
+    <input name="telefono" id="telefono">
+
+    <input type="submit" value="Aceptar" method="post">
+  </form>
+{% endblock %}
