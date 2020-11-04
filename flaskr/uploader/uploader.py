@@ -17,21 +17,30 @@ def storeData(file):
     rows = df.shape[0]  # obtiene el numero de filas (sin contar el encabezado)
 
     lista = df.loc[0].tolist()  # convierte en lista el contenido de una fila
-
-    db.execute(
-        'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacNuevos, pacCovidNuevos, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
-        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]), str(lista[5]), str(lista[6]),
-         str(lista[7]), 0, 0, 0, 0, 0, 0, 0, 0)  # TODO: placeholder
-    )
-    idCarga = db.execute('SELECT last_insert_id(cargaDiaria)')
-    db.commit()
-    return idCarga
+    session['carga'] = {}
+    session['carga']['centro'] = lista[0]
+    session['carga']['camaGCDisp'] = lista[6]
+    session['carga']['camaGCOc'] = lista[7]
+    session['carga']['camaUTIOc'] = lista[5]
+    session['carga']['camaUTIDisp'] = lista[4]
+    session['carga']['respiradoresDisp'] = lista[2]
+    session['carga']['respiradoresOc'] = lista[3]
+    session['carga']['fecha'] = lista[1]
+    session['carga']['centroSalud'] = lista[0]
+    session['carga']['pacNuevos'] = 0
+    session['carga']['pacCovidNuevos'] = 0
+    session['carga']['pacFall'] = 0
+    session['carga']['pacCovidFall'] = 0
+    session['carga']['pacAlta'] = 0
+    session['carga']['pacCovidAlta'] = 0
+    session['carga']['pacCovidUTI'] = 0
+    session['carga']['pacUTI'] = 0
 
 
 @bp.route('/datosHospital', methods=('GET', 'POST'))
 @uploader_login_required
 def uploadDatosHospital():
+    #Migracion de datos
     if request.method == 'POST' and request.form['submitButton'] == 'Subir Archivo':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -44,12 +53,14 @@ def uploadDatosHospital():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            idCarga = storeData(file)
+            storeData(file)
             flash('Succesfull upload')
             return redirect(url_for('upload.upload'))
+
+    #Carga manual
     if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
-        centroSalud = request.form[
-            'centroSalud']  # TODO: El centro de salud deberia obtenerse a partir de el usuario logueado para evitar inconsistencias
+        centroSalud = request.form['centroSalud']
+        # TODO: El centro de salud deberia obtenerse a partir de el usuario logueado para evitar inconsistencias
         fecha = request.form['fecha']
         respiradoresDisp = request.form['respiradoresDisponibles']
         respiradoresOc = request.form['respiradoresOcupados']
@@ -83,7 +94,6 @@ def uploadDatosHospital():
             session['carga']['respiradoresDisp'] = respiradoresDisp
             session['carga']['respiradoresOc'] = respiradoresOc
             session['carga']['fecha'] = fecha
-            session['carga']['centroSalud'] = centroSalud
             session['carga']['pacNuevos'] = 0
             session['carga']['pacCovidNuevos'] = 0
             session['carga']['pacFall'] = 0
@@ -110,6 +120,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 def storePacientes(file):
     df = pd.read_excel(file, 'Sheet1')
     db = get_db()
@@ -121,9 +132,33 @@ def storePacientes(file):
         'UPDATE cargaDiaria SET pacNuevos = ?, pacCovidNuevos = ?, pacAlta = ?, pacCOVIDAlta = ?, pacFall = ?, pacCOVIDFall = ?, pacCOVIDUTI = ?, pacUTI = ?'
         'WHERE id = ?',
         (str(lista[0]), str(lista[1]), str(lista[2]), str(lista[3]), str(lista[4]),
-        str(lista[5]), str(lista[6]), str(lista[7]), id)  # TODO: placeholder
+         str(lista[5]), str(lista[6]), str(lista[7]), id)  # TODO: placeholder
     )
     db.commit()
+
+
+def cargarPaciente(dni, nombre, apellido, telefono, estado, centro):
+    db = get_db()
+    db.execute(
+        'INSERT INTO paciente (dni, nombre, apellido, telefono, estado, centro)'
+        ' VALUES (?, ?, ?, ?, ?, ?)',
+        (dni, nombre, apellido, telefono, estado, centro)
+    )
+    db.commit()
+
+    if estado == 'Covid':
+        session['carga']['pacNuevos'] = session['carga']['pacNuevos'] + 1
+        session.modified = True
+    else:  # if estado == 'Clinico':
+        session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
+        session.modified = True
+
+    if request.form['submitButton'] == 'CargarPaciente':
+        return redirect(url_for('upload.uploadPacientes'))
+
+    if request.form['submitButton'] == 'Finalizar':
+        return redirect(url_for('upload.Pacientes'))
+
 
 @bp.route('/datosPacientes', methods=('GET', 'POST'))
 @uploader_login_required
@@ -158,31 +193,13 @@ def uploadPacientes():
 
         db = get_db()
 
-        print(dni)
+
         if db.execute('SELECT * FROM paciente WHERE dni = ?', (str(dni),)
                       ).fetchone() is not None:
             error = 'Este paciente ya fue ingresado.'
 
         if error is None:
-            db.execute(
-                'INSERT INTO paciente (dni, nombre, apellido, telefono, estado, centro)'
-                ' VALUES (?, ?, ?, ?, ?, ?)',
-                (dni, nombre, apellido, telefono, estado, centro)
-            )
-            db.commit()
-
-            if estado == 'Covid':
-                session['carga']['pacNuevos'] = session['carga']['pacNuevos'] + 1
-                session.modified = True
-            else:  # if estado == 'Clinico':
-                session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
-                session.modified = True
-
-            if request.form['submitButton'] == 'CargarPaciente':
-                return redirect(url_for('upload.uploadPacientes'))
-
-            if request.form['submitButton'] == 'Finalizar':
-                return redirect(url_for('upload.Pacientes'))
+            cargarPaciente(dni,nombre,apellido,telefono,estado,centro)
 
         flash(error)
 
