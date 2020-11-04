@@ -143,8 +143,7 @@ def uploadPacientes():
         else: #if estado == 'InternadoClinico':
             print("conto un paciente covid")
             print(session['carga']['pacCovidNuevos'])
-            session['carga']['pacCovidNuevos'] = int(session['carga']['pacCovidNuevos']) + 1
-            print(session['carga']['pacCovidNuevos'])
+            session['carga']['pacCovidNuevos'] = (1 + int(session['carga']['pacCovidNuevos']))
 
         if request.form['submitButton'] == 'CargarPaciente':
             return redirect(url_for('upload.uploadPacientes'))

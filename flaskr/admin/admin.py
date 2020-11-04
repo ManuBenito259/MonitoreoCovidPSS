@@ -249,9 +249,13 @@ def editCentro(id):
 
         db=get_db()
 
-        idCentro=db.execute('SELECT id FROM centroSalud WHERE nombre = ?',(id,))
+        idCentro=db.execute('SELECT id FROM centroSalud WHERE nombre = ?',(id,)).fetchone()
 
-        #TODO: update base de datos
+        print(id)
+        db.execute('UPDATE centroSalud SET nombre = ?, direccion = ?, mail = ?, telefono = ?'
+                   'WHERE nombre=?', (nombre, direccion,mail, telefono, id))
+        db.commit()
+
 
         return redirect(url_for('admin.centrosSalud'))
 
