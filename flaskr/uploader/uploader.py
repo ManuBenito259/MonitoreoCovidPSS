@@ -137,29 +137,6 @@ def storePacientes(file):
     db.commit()
 
 
-def cargarPaciente(dni, nombre, apellido, telefono, estado, centro):
-    db = get_db()
-    db.execute(
-        'INSERT INTO paciente (dni, nombre, apellido, telefono, estado, centro)'
-        ' VALUES (?, ?, ?, ?, ?, ?)',
-        (dni, nombre, apellido, telefono, estado, centro)
-    )
-    db.commit()
-
-    if estado == 'Covid':
-        session['carga']['pacNuevos'] = session['carga']['pacNuevos'] + 1
-        session.modified = True
-    else:  # if estado == 'Clinico':
-        session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
-        session.modified = True
-
-    if request.form['submitButton'] == 'CargarPaciente':
-        return redirect(url_for('upload.uploadPacientes'))
-
-    if request.form['submitButton'] == 'Finalizar':
-        return redirect(url_for('upload.Pacientes'))
-
-
 @bp.route('/datosPacientes', methods=('GET', 'POST'))
 @uploader_login_required
 def uploadPacientes():
@@ -199,7 +176,25 @@ def uploadPacientes():
             error = 'Este paciente ya fue ingresado.'
 
         if error is None:
-            cargarPaciente(dni,nombre,apellido,telefono,estado,centro)
+            db.execute(
+                'INSERT INTO paciente (dni, nombre, apellido, telefono, estado, centro)'
+                ' VALUES (?, ?, ?, ?, ?, ?)',
+                (dni, nombre, apellido, telefono, estado, centro)
+            )
+            db.commit()
+
+            if estado == 'Covid':
+                session['carga']['pacNuevos'] = session['carga']['pacNuevos'] + 1
+                session.modified = True
+            else:  # if estado == 'Clinico':
+                session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
+                session.modified = True
+
+            if request.form['submitButton'] == 'CargarPaciente':
+                return redirect(url_for('upload.uploadPacientes'))
+
+            if request.form['submitButton'] == 'Finalizar':
+                return redirect(url_for('upload.Pacientes'))
 
         flash(error)
 
