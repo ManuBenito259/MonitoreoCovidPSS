@@ -50,9 +50,13 @@ CREATE TABLE paciente(
     apellido VARCHAR(45) NOT NULL,
     telefono INTEGER,
     estado VARCHAR(45) NOT NULL,
+    centro INTEGER,
 
     CONSTRAINT pk_paciente
     PRIMARY KEY (dni)
+
+    CONSTRAINT fk_paciente_centroSalud
+    FOREIGN KEY (centro) REFERENCES centroSalud(id)
 );
 
 

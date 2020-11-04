@@ -95,7 +95,6 @@ def uploadDatosHospital():
             session['carga']['pacCovidUTI'] = 0
             session['carga']['pacUTI'] = 0
 
-
             return redirect(url_for('upload.uploadPacientes'))
         else:
             flash(error)
@@ -126,70 +125,117 @@ def uploadPacientes():
         apellido = request.form['apellido']
         telefono = request.form['telefono']
         estado = request.form['estado']
-        print(estado)
+        centro = str(session['carga']['centro'])
+        error = None
+
+        if not dni or not nombre or not apellido or not estado:
+            error = "Complete todos los campos"
 
         db = get_db()
-        db.execute(
-            'INSERT INTO paciente (dni, nombre, apellido, telefono, estado)'
-            ' VALUES (?, ?, ?, ?, ?)',
-            (dni, nombre, apellido, telefono, estado,)
-        )
 
-        if estado == 'InternadoCovid':
-            print("conto un paciente comun")
-            print(session['carga']['pacNuevos'])
-            session['carga']['pacNuevos'] = int(session['carga']['pacNuevos']) +1
-            print(session['carga']['pacNuevos'])
-        else: #if estado == 'InternadoClinico':
-            print("conto un paciente covid")
-            print(session['carga']['pacCovidNuevos'])
-            session['carga']['pacCovidNuevos'] = (1 + int(session['carga']['pacCovidNuevos']))
+        print(dni)
+        if db.execute('SELECT * FROM paciente WHERE dni = ?', (str(dni),)
+                      ).fetchone() is not None:
+            error = 'Este paciente ya fue ingresado.'
 
-        if request.form['submitButton'] == 'CargarPaciente':
-            return redirect(url_for('upload.uploadPacientes'))
+        if error is None:
+            db.execute(
+                'INSERT INTO paciente (dni, nombre, apellido, telefono, estado, centro)'
+                ' VALUES (?, ?, ?, ?, ?, ?)',
+                (dni, nombre, apellido, telefono, estado, centro)
+            )
+            db.commit()
 
-        if request.form['submitButton'] == 'Finalizar':
-            return redirect(url_for('upload.uploadEstadoPacientes'))
+            if estado == 'Covid':
+                session['carga']['pacNuevos'] = session['carga']['pacNuevos'] + 1
+                session.modified = True
+            else:  # if estado == 'Clinico':
+                session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
+                session.modified = True
+
+            if request.form['submitButton'] == 'CargarPaciente':
+                return redirect(url_for('upload.uploadPacientes'))
+
+            if request.form['submitButton'] == 'Finalizar':
+                return redirect(url_for('upload.Pacientes'))
+
+        flash(error)
 
     return render_template('uploader/uploadPacientes.html')
 
 
-@bp.route('/estadoPacientes', methods=('GET', 'POST'))
-@uploader_login_required
-def uploadEstadoPacientes():
-    if request.method == 'POST' and request.form['submitButton'] == 'Finalizar':
-        centro = session['carga']['centro']
-        fecha = session['carga']['fecha']
-        respDisp = session['carga']['respiradoresDisp']
-        respOc = session['carga']['respiradoresOc']
-        camaUTIDisp = session['carga']['camaUTIDisp']
-        camaUTIOc = session['carga']['camaUTIOc']
-        camaGCDisp = session['carga']['camaGCDisp']
-        camaGCOc = session['carga']['camaGCOc']
-        pacNuevos = session['carga']['pacNuevos']
-        pacCovidNuevos = session['carga']['pacCovidNuevos']
-        pacAlta = session['carga']['pacAlta']
-        pacCovidAlta = session['carga']['pacCovidAlta']
-        pacFall = session['carga']['pacFall']
-        pacCovidFall = session['carga']['pacCovidFall']
-        pacCovidUTI = session['carga']['pacCovidUTI']
-        pacUTI = session['carga']['pacUTI']
-
-
-        db = get_db()
-        db.execute(
-            'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacCovidNuevos, pacNuevos, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
-            ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            (centro, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp, camaGCOc, pacNuevos, pacCovidNuevos, pacAlta, pacCovidAlta, pacFall, pacCovidFall, pacCovidUTI, pacUTI)
-        )
-        db.commit()
-        return(redirect(url_for('upload.uploadDatosHospital')))
-
-
+def storeCargaDiaria():
+    centro = session['carga']['centro']
+    fecha = session['carga']['fecha']
+    respDisp = session['carga']['respiradoresDisp']
+    respOc = session['carga']['respiradoresOc']
+    camaUTIDisp = session['carga']['camaUTIDisp']
+    camaUTIOc = session['carga']['camaUTIOc']
+    camaGCDisp = session['carga']['camaGCDisp']
+    camaGCOc = session['carga']['camaGCOc']
+    pacNuevos = session['carga']['pacNuevos']
+    pacCovidNuevos = session['carga']['pacCovidNuevos']
+    pacAlta = session['carga']['pacAlta']
+    pacCovidAlta = session['carga']['pacCovidAlta']
+    pacFall = session['carga']['pacFall']
+    pacCovidFall = session['carga']['pacCovidFall']
+    pacCovidUTI = session['carga']['pacCovidUTI']
+    pacUTI = session['carga']['pacUTI']
 
     db = get_db()
-    pacientes = db.execute(
-        'SELECT *'
-        ' FROM paciente'
-    ).fetchall()
-    return render_template('uploader/uploadEstadoPaciente.html', pacientes=pacientes)
+    db.execute(
+        'INSERT INTO cargaDiaria (centroSalud, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp,'
+        ' camaGCOc, pacCovidNuevos, pacNuevos, pacAlta, pacCOVIDAlta, pacFall, pacCOVIDFall, pacCOVIDUTI, pacUTI)'
+        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        (centro, fecha, respDisp, respOc, camaUTIDisp, camaUTIOc, camaGCDisp,
+         camaGCOc, pacNuevos, pacCovidNuevos, pacAlta, pacCovidAlta, pacFall, pacCovidFall, pacCovidUTI, pacUTI)
+    )
+    db.commit()
+
+
+@bp.route('/Pacientes', methods=('GET', 'POST'))
+@uploader_login_required
+def Pacientes():
+    if request.method == 'POST' and request.form['submitButton'] == 'Finalizar':
+        storeCargaDiaria()
+        flash("Reporte cargado exitosamente")
+        return redirect(url_for('upload.uploadDatosHospital'))
+
+    db = get_db()
+    centro = session['carga']['centro']
+    pacientes = db.execute('SELECT * FROM paciente WHERE centro = ?',
+                           (str(centro),)).fetchall()
+    return render_template('uploader/Pacientes.html', pacientes=pacientes)
+
+
+@bp.route('/<string:dni>/estadoPacientes', methods=('GET', 'POST'))
+@uploader_login_required
+def updatePaciente(dni):
+    if request.method == 'POST':
+        db = get_db()
+        estadoAnt = db.execute('SELECT estado FROM paciente WHERE dni = ?', dni)
+        estadoNuevo = request.form['estado']
+        if estadoNuevo == "Alta" or estadoNuevo == "Fallecido":
+            db.execute('DELETE FROM paciente WHERE dni = ?', dni)
+        else:
+            db.execute('UPDATE paciente set estado = ? WHERE dni = ?', (estadoNuevo, dni))
+
+        db.commit()
+
+        if estadoNuevo == "Alta" and estadoAnt != "Alta":
+            session['carga']['pacAlta'] = session['carga']['pacAlta'] + 1
+        elif estadoNuevo == "Fallecido" and estadoAnt != "Fallecido":
+            session['carga']['pacFall'] = session['carga']['pacFall'] + 1
+        elif estadoNuevo == "UTI" and estadoAnt != "UTI":
+            session['carga']['pacUTI'] = session['carga']['pacUTI'] + 1
+
+        session.modified = True
+        flash("el estado del paciente fue actualizado")
+        return redirect(url_for('upload.Pacientes'))
+
+    db = get_db()
+    print("el paciente es ", dni)
+    paciente = db.execute('SELECT * FROM paciente WHERE dni = ?', dni).fetchone()
+    print(paciente)
+
+    return render_template('uploader/updateEstadoPaciente.html', paciente=paciente)
