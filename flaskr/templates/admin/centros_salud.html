@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Centros de Salud{% endblock %}</h1>
+
+{% endblock %}
+
+{% block content %}
+  {# read users #}
+  {% for centro in centros %}
+    <article class="centroSalud">
+      <header>
+        <div>
+          <h1>{{ centro['nombre'] }}</h1>
+          <div class="about">CP: {{ centro['ubicacion']}}</div>
+          <div class="about">Direcion:  {{ centro['direccion']}}</div>
+          <div class="about">Mail:  {{ centro['mail']}}</div>
+          <div class="about">Telefono:  {{ centro['telefono']}}</div>
+          <div class="about">Publico:  {{ centro['publico']}}</div>
+        </div>
+        <form action="{{ url_for('admin.deleteCentro', id=centro['nombre'])}}" method="post">
+          <input class="danger" type="submit" value="Eliminar" onclick="return confirm('Are you sure?');">
+        </form>
+        <form action="{{ url_for('admin.editCentro', id=centro['nombre'])}}">
+          <input type="submit" value="Editar">
+        </form>
+      </header>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+
+
+
+{% endblock %}
+
+

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Carga diaria{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit name=submitButton value='Subir Archivo'>
+    </form>
+    <h1>Formulario de Carga Diaria</h1>
+    <h4>Los campos con (*) son obligatorios</h4>
+    <form method="post">
+      <label for="centroSalud">Centro de Salud</label>
+      <select type="centroSalud" name="centroSalud"  id="centroSalud" required>
+        {%for centro in centros%}
+            <option value= "{{centro['nombre']}}" >{{centro['nombre']}} </option>
+        {%endfor%}
+      </select>
+
+      <label for="fecha">Fecha (*)</label>
+      <FONT SIZE=2>Ejemplo: 18/09/1999</font>
+      <input name="fecha" id="fecha" value="{{ request.form['fecha'] }}" required>
+
+
+      <label for="respiradoresDisponibles">Respiradores disponibles (*)</label>
+      <input name="respiradoresDisponibles" id="respiradoresDisponibles" value="{{ request.form['respiradoresDisponibles'] }}" required>
+
+      <label for="respiradoresOcupados">Respiradores ocupados (*)</label>
+      <input name="respiradoresOcupados" id="respiradoresOcupados" value="{{ request.form['respiradoresOcupados'] }}" required>
+
+      <label for="camasUTIDisponibles">Camas de Unidad de Terapia Intensiva disponibles (*)</label>
+      <input name="camasUTIDisponibles" id="camasUTIDisponibles" value="{{ request.form['camasUTIDisponibles'] }}" required>
+
+      <label for="camasUTIOcupadas">Camas de Unidad de Terapia Intensiva ocupadas (*)</label>
+      <input name="camasUTIOcupadas" id="camasUTIOcupadas" value="{{ request.form['camasUTIOcupadas'] }}" required>
+
+      <label for="camasGCDisponibles">Camas con gases centrales disponibles (*)</label>
+      <input name="camasGCDisponibles" id="camasGCDisponibles" value="{{ request.form['camasGCDisponibles'] }}" required>
+
+      <label for="camasGCOcupadas">Camas con gases centrales ocupadas (*)</label>
+      <input name="camasGCOcupadas" id="camasGCOcupadas" value="{{ request.form['camasGCOcupadas'] }}" required>
+
+      <input type=submit name=submitButton value='SaveCarga'>
+    </form>
+{% endblock %}

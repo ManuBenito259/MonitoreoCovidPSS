@@ -21,10 +21,8 @@ def viewer_login():
             'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+        if (user is None) or (not check_password_hash(user['password'], password)):
+            error = 'La contraseña y/o nombre de usuario es incorrecto'
 
         if error is None:
             session.clear()
@@ -47,15 +45,13 @@ def uploader_login():
             'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+        if (user is None) or (not check_password_hash(user['password'], password)):
+            error = 'La contraseña y/o nombre de usuario es incorrecto'
 
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('upload.upload'))
+            return redirect(url_for('upload.uploadDatosHospital'))
 
         flash(error)
 
@@ -73,10 +69,8 @@ def admin_login():
             'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+        if (user is None) or (not check_password_hash(user['password'], password)):
+            error = 'La contraseña y/o nombre de usuario es incorrecto'
 
         if error is None:
             session.clear()
@@ -129,7 +123,7 @@ def uploader_login_required(view):
         if g.user is None:
             return redirect(url_for('auth.uploader_login'))
         if g.user['type'] != "uploader":
-            return redirect(url_for('auth.upladoer_login'))
+            return redirect(url_for('auth.uploader_login'))
         return view(**kwargs)
 
     return wrapped_view

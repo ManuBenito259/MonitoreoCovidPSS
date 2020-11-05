@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Nuevo Centro de Salud{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="nombre">Nombre</label>
+    <input name="nombre" id="nombre" required>
+    <label for="ubicacion">Ubicacion</label>
+    <select type="ubicacion" name="ubicacion" id="ubicacion" required>
+        {%for ubicacion in ubicaciones%}
+            <option value= "{{ubicacion['cp']}}" >{{ubicacion['ciudad']}}, {{ubicacion['cp']}} </option>
+        {%endfor%}
+    </select>
+    <label for="direccion">direccion</label>
+    <input type="direccion" name="direccion" id="direccion" required>
+    <label for="mail">Mail</label>
+    <input name="mail" id="mail" required>
+    <label for="telefono">Telefono</label>
+    <input name="telefono" id="telefono" required>
+    <label for="publico">Publico</label>
+    <select type="publico" name="publico" id="publico" required>
+        <option value= "True" >Publico </option>
+        <option value= "False" >Privado </option>
+    </select>
+    <input type="submit" value="Subir">
+
+  </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<FONT SIZE=1>
+<table class="eg">
+
+
+
+  {% for reporte in reportes %}
+     <br><label>En la provincia de {{reporte['provincia']}} </label><br/>
+     <br><label>Se registraron {{reporte['pacNuevos']}} nuevos ingresos clinicos y </label>
+     <label> {{reporte['pacCovidNuevos']}} nuevos casos de coronavirus </label><br/>
+  {% endfor %}
+  </table>
+
+</font>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Actualizar estado del paciente{% endblock %}</h1>
+
+{% endblock %}
+
+{% block content %}
+    <article class="Paciente">
+      <header>
+        <div>
+          <h1>{{ paciente['dni'] }}</h1>
+          <div class="about">Nombre: {{ paciente['nombre']}}</div>
+          <div class="about">Apellido:  {{ paciente['apellido']}}</div>
+          <div class="about">Estado:  {{ paciente['estado']}}</div>
+        </div>
+
+
+      </header>
+    </article>
+
+  <form method="post">
+         <select type="estado" name="estado" id="estado" required>
+            <option value= "Fallecido" >Fallecido </option>
+            <option value= "UTI" >Derivado a UTI </option>
+            <option value= "Alta" >Dado de alta </option>
+            <option value= "Internado" >Derivado a internacion </option>
+         </select>
+
+
+         <input type=submit name=submitButton value='Actualizar'>
+  </form>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+

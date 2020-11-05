@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<FONT SIZE=2>
+<table class="eg">
+
+  <tr>
+    <th>Centro</th>
+    <th>Fecha</th>
+    <th>Respiradores disponibles</th>
+    <th>Respiradores ocupados</th>
+    <th>Camas de UTI disponibles</th>
+    <th>Camas de UTI ocupadas</th>
+    <th>Camas con GC disponibles</th>
+    <th>Camas con GC ocupadas</th>
+    <th>Pacientes ingresados clinicos</th>
+    <th>Pacientes ingresados con Covid</th>
+    <th>Pacientes dados de alta</th>
+    <th>Pacientes fallecidos</th>
+    <th>Pacientes derivados a UTI</th>
+  </tr>
+
+  {% for post in posts %}
+      <tr>
+        <td align="center" >{{ post['centroSalud'] }}</td>
+        <td align="center" >{{ post['fecha'] }}</td>
+        <td align="center" >{{ post['respDisp'] }}</td>
+        <td align="center" >{{ post['respOc'] }}</td>
+        <td align="center" >{{ post['camaUTIDisp'] }}</td>
+        <td align="center" >{{ post['camaUTIOc'] }}</td>
+        <td align="center" >{{ post['camaGCDisp'] }}</td>
+        <td align="center" >{{ post['camaGCOc'] }}</td>
+        <td align="center" >{{ post['pacNuevos'] }}</td>
+        <td align="center" >{{ post['pacCovidNuevos'] }}</td>
+        <td align="center" >{{ post['pacAlta'] }}</td>
+        <td align="center" >{{ post['pacFall'] }}</td>
+        <td align="center" >{{ post['pacUTI'] }}</td>
+
+      </tr>
+  {% endfor %}
+  </table>
+
+</font>
+{% endblock %}
