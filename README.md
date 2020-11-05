@@ -13,9 +13,13 @@ To run, clone the repository, open cmd on the root folder and run
 
 
 
-To instal flask, open cmd and type 
+To install flask, xlrd y pandas, open cmd and type 
 
 <b/> pip install flask </b>
+
+<b/> pip install xlrd </b>
+
+<b/> pip install pandas </b>
 
 
 
