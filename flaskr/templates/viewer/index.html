@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<FONT SIZE=2>
+<FONT SIZE=1>
 <table class="eg">
 
   <tr>
@@ -44,11 +44,17 @@
         <td>{{ post['pacCOVIDAlta'] }}</td>
         <td>{{ post['pacFall'] }}</td>
         <td>{{ post['pacCOVIDFall'] }}</td>
-        <td>{{ post['pacCOVIDUTI'] }}</td>
         <td>{{ post['pacUTI'] }}</td>
+        <td>{{ post['pacCOVIDUTI'] }}</td>
 
       </tr>
   {% endfor %}
   </table>
+  <br><label>Pacientes nuevos con Covid</label><br/>
+  {{pacientesCovid}}
+  <br><label>Pacientes con Covid dados de alta</label><br/>
+  {{pacientesCovidAlta}}
+  <br><label>Pacientes con Covid fallecidos</label><br/>
+  {{pacientesCovidFallecidos}}
 </font>
 {% endblock %}

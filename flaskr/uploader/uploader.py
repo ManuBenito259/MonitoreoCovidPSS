@@ -146,7 +146,7 @@ def uploadPacientes():
             if estado == 'Covid':
                 session['carga']['pacNuevos'] = session['carga']['pacNuevos'] + 1
                 session.modified = True
-            else:  # if estado == 'Clinico':
+            else:  # if estado == 'Covid':
                 session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
                 session.modified = True
 
