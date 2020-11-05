@@ -1,60 +1,11 @@
-
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Posts{% endblock %}</h1>
+  <h1>{% block title %}System Users{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('data.estadisticas') }}">Estadisticas</a>
+    <a class="action" href="{{ url_for('data.reportes') }}">Reportes</a>
+  {% endif %}
 {% endblock %}
 
-{% block content %}
-<FONT SIZE=1>
-<table class="eg">
 
-  <tr>
-    <th>Centro</th>
-    <th>Fecha</th>
-    <th>Respiradores disponibles</th>
-    <th>Respiradores ocupados</th>
-    <th>Camas de UTI disponibles</th>
-    <th>Camas de UTI ocupadas</th>
-    <th>Camas con GC disponibles</th>
-    <th>Camas con GC ocupadas</th>
-    <th>Pacientes ingresados</th>
-    <th>Pacientes ingresados con Covid</th>
-    <th>Pacientes dados de alta de UTI</th>
-    <th>Pacientes con COVID dados de alta de UTI</th>
-    <th>Pacientes fallecidos de UTI</th>
-    <th>Pacientes con COVID fallecidos de UTI</th>
-    <th>Pacientes con COVID derivados en UTI</th>
-    <th>Pacientes derivados en UTI</th>
-  </tr>
-
-  {% for post in posts %}
-      <tr>
-        <td>{{ post['centroSalud'] }}</td>
-        <td>{{ post['fecha'] }}</td>
-        <td>{{ post['respDisp'] }}</td>
-        <td>{{ post['respOc'] }}</td>
-        <td>{{ post['camaUTIDisp'] }}</td>
-        <td>{{ post['camaUTIOc'] }}</td>
-        <td>{{ post['camaGCDisp'] }}</td>
-        <td>{{ post['camaGCOc'] }}</td>
-        <td>{{ post['pacNuevos'] }}</td>
-        <td>{{ post['pacCovidNuevos'] }}</td>
-        <td>{{ post['pacAlta'] }}</td>
-        <td>{{ post['pacCOVIDAlta'] }}</td>
-        <td>{{ post['pacFall'] }}</td>
-        <td>{{ post['pacCOVIDFall'] }}</td>
-        <td>{{ post['pacUTI'] }}</td>
-        <td>{{ post['pacCOVIDUTI'] }}</td>
-
-      </tr>
-  {% endfor %}
-  </table>
-  <br><label>Pacientes nuevos con Covid</label><br/>
-  {{pacientesCovid}}
-  <br><label>Pacientes con Covid dados de alta</label><br/>
-  {{pacientesCovidAlta}}
-  <br><label>Pacientes con Covid fallecidos</label><br/>
-  {{pacientesCovidFallecidos}}
-</font>
-{% endblock %}
