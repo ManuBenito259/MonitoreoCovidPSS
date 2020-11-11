@@ -18,7 +18,7 @@ def viewer_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ? AND type = ?', (username, "viewer")
         ).fetchone()
 
         if (user is None) or (not check_password_hash(user['password'], password)):
@@ -42,7 +42,7 @@ def uploader_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ? AND type = ?', (username, "uploader")
         ).fetchone()
 
         if (user is None) or (not check_password_hash(user['password'], password)):
@@ -51,7 +51,7 @@ def uploader_login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('upload.uploadDatosHospital'))
+            return redirect(url_for('upload.index'))
 
         flash(error)
 
@@ -66,7 +66,7 @@ def admin_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ? AND type = ?', (username, "admin")
         ).fetchone()
 
         if (user is None) or (not check_password_hash(user['password'], password)):

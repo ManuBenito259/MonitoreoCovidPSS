@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Usuario de carga{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('upload.uploadDatosHospital') }}">Carga Diaria</a>
+    <a class="action" href="{{ url_for('upload.listadoPacientes') }}">Pacientes</a>
+  {% endif %}
+{% endblock %}
+
+

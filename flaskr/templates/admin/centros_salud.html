@@ -19,7 +19,7 @@
           <div class="about">Publico:  {{ centro['publico']}}</div>
         </div>
         <form action="{{ url_for('admin.deleteCentro', id=centro['nombre'])}}" method="post">
-          <input class="danger" type="submit" value="Eliminar" onclick="return confirm('Are you sure?');">
+          <input class="danger" type="submit" value="Eliminar" onclick="return confirm('Esta seguro de que desea eliminar este centro desalud?');">
         </form>
         <form action="{{ url_for('admin.editCentro', id=centro['nombre'])}}">
           <input type="submit" value="Editar">

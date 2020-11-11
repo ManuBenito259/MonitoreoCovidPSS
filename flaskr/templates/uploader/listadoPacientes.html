@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Listado Pacientes{% endblock %}</h1>
+
+{% endblock %}
+
+{% block content %}
+  {% for paciente in pacientes %}
+    <article class="paciente">
+      <header>
+        <div>
+          <h1>{{ paciente['dni'] }}</h1>
+          <div class="about">Nombre: {{ paciente['nombre']}}</div>
+          <div class="about">Apellido:  {{ paciente['apellido']}}</div>
+          <div class="about">Estado:  {{ paciente['centro']}}</div>
+        </div>
+
+      </header>
+    </article>
+
+
+    <hr>
+
+  {% endfor %}
+
+
+
+{% endblock %}
+
+

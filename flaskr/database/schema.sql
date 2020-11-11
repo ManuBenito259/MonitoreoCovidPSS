@@ -53,7 +53,7 @@ CREATE TABLE paciente(
     centro INTEGER,
 
     CONSTRAINT pk_paciente
-    PRIMARY KEY (dni)
+    PRIMARY KEY (dni),
 
     CONSTRAINT fk_paciente_centroSalud
     FOREIGN KEY (centro) REFERENCES centroSalud(id)

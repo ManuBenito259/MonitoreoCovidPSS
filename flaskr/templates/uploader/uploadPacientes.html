@@ -9,10 +9,10 @@
     <h4>Los campos con (*) son obligatorios</h4>
     <form method="post">
       <label for="dni">DNI (*)</label>
-      <input name="dni" id="dni" value="{{ request.form['dni'] }}">
+      <input type="number" min="1" name="dni" id="dni" value="{{ request.form['dni'] }}">
 
       <label for="nombre">Nombre (*)</label>
-      <input name="nombre" id="nombre" value="{{ request.form['nombre'] }}">
+      <input name="nombre" id="nombre" value="{{ request.form['nombre'] }} ">
 
       <label for="apellido">Apellido (*)</label>
       <input name="apellido" id="apellido" value="{{ request.form['apellido'] }}">
@@ -29,7 +29,8 @@
 
 
       <input type=submit name=submitButton value='CargarPaciente'>
-      <input type=submit name=submitButton value='Finalizar'>
+      <input type=submit name=submitButton value='Finalizar'
+             onclick="return confirm('Si continua los valores ingresados se perderan');" >
     </form>
 
 {% endblock %}

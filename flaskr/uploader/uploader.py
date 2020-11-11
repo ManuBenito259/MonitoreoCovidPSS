@@ -31,7 +31,7 @@ def storeData(file):
 @bp.route('/datosHospital', methods=('GET', 'POST'))
 @uploader_login_required
 def uploadDatosHospital():
-    #Migracion de datos
+    # Migracion de datos
     if request.method == 'POST' and request.form['submitButton'] == 'Subir Archivo':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -48,7 +48,7 @@ def uploadDatosHospital():
             flash('Succesfull upload')
             return redirect(url_for('upload.uploadDatosHospital'))
 
-    #Carga manual
+    # Carga manual
     if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
         centroSalud = request.form['centroSalud']
         # TODO: El centro de salud deberia obtenerse a partir de el usuario logueado para evitar inconsistencias
@@ -115,8 +115,10 @@ def allowed_file(filename):
 @bp.route('/datosPacientes', methods=('GET', 'POST'))
 @uploader_login_required
 def uploadPacientes():
+    if request.method == 'POST' and request.form['submitButton'] == 'Finalizar':
+        return redirect(url_for('upload.Pacientes'))
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form['submitButton'] == 'CargarPaciente':
         dni = request.form['dni']
         nombre = request.form['nombre']
         apellido = request.form['apellido']
@@ -125,11 +127,9 @@ def uploadPacientes():
         centro = str(session['carga']['centro'])
         error = None
 
-        if not dni or not nombre or not apellido or not estado:
-            error = "Complete todos los campos"
-
+        if dni and int(dni) < 0:
+            error = "Ingrese un DNI valido"
         db = get_db()
-
 
         if db.execute('SELECT * FROM paciente WHERE dni = ?', (str(dni),)
                       ).fetchone() is not None:
@@ -150,11 +150,7 @@ def uploadPacientes():
                 session['carga']['pacCovidNuevos'] = session['carga']['pacCovidNuevos'] + 1
                 session.modified = True
 
-            if request.form['submitButton'] == 'CargarPaciente':
-                return redirect(url_for('upload.uploadPacientes'))
-
-            if request.form['submitButton'] == 'Finalizar':
-                return redirect(url_for('upload.Pacientes'))
+            return redirect(url_for('upload.uploadPacientes'))
 
         flash(error)
 
@@ -196,11 +192,16 @@ def Pacientes():
     if request.method == 'POST' and request.form['submitButton'] == 'Finalizar':
         storeCargaDiaria()
         flash("Reporte cargado exitosamente")
-        return redirect(url_for('upload.uploadDatosHospital'))
+        return redirect(url_for('upload.index'))
 
     db = get_db()
     centro = session['carga']['centro']
-    pacientes = db.execute('SELECT * FROM paciente WHERE centro = ?',
+    pacientes = db.execute('SELECT * FROM paciente WHERE centro = ? '
+                           'ORDER BY CASE '
+                           'WHEN estado = "Covid" THEN 1 '
+                           'WHEN estado = "UTI" THEN 2 ' 
+                           'WHEN estado = "Clinico" THEN 3 '
+                           'ELSE estado  END ASC',
                            (str(centro),)).fetchall()
     return render_template('uploader/Pacientes.html', pacientes=pacientes)
 
@@ -210,12 +211,10 @@ def Pacientes():
 def updatePaciente(dni):
     if request.method == 'POST':
         db = get_db()
-        estadoAnt = db.execute('SELECT estado FROM paciente WHERE dni = ?', dni)
+        estadoAnt = db.execute('SELECT estado FROM paciente WHERE dni = ?', (dni,))
         estadoNuevo = request.form['estado']
-        if estadoNuevo == "Alta" or estadoNuevo == "Fallecido":
-            db.execute('DELETE FROM paciente WHERE dni = ?', dni)
-        else:
-            db.execute('UPDATE paciente set estado = ? WHERE dni = ?', (estadoNuevo, dni))
+
+        db.execute('UPDATE paciente set estado = ? WHERE dni = ?', (estadoNuevo, dni))
 
         db.commit()
 
@@ -231,8 +230,20 @@ def updatePaciente(dni):
         return redirect(url_for('upload.Pacientes'))
 
     db = get_db()
-    print("el paciente es ", dni)
-    paciente = db.execute('SELECT * FROM paciente WHERE dni = ?', dni).fetchone()
+    paciente = db.execute('SELECT * FROM paciente WHERE dni = ?', (int(dni),)).fetchone()
     print(paciente)
 
     return render_template('uploader/updateEstadoPaciente.html', paciente=paciente)
+
+@bp.route('/listadoPacientes')
+@uploader_login_required
+def listadoPacientes():
+    db = get_db()
+    pacientes = db.execute('SELECT * FROM paciente ORDER BY centro, estado',).fetchall()
+
+    return render_template('uploader/listadoPacientes.html', pacientes=pacientes)
+
+@bp.route('/')
+@uploader_login_required
+def index():
+    return render_template('uploader/index.html')
