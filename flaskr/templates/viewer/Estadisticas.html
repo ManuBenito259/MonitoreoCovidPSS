@@ -5,8 +5,22 @@
 {% endblock %}
 
 {% block content %}
+      <form method="post">
+        <select  type="Jurisdiccion" name="Jurisdiccion"  id="Jurisdiccion" required>
+               <option value= "Todos" >Todos </option>
+               {%for ubicacion in ubicaciones%}
+                   <option value= "{{ubicacion['cp']}}" >{{ubicacion['nombre']}}, {{ubicacion['cp']}} </option>
+               {%endfor%}
+        </select>
+
+         <input type="submit" value="Actualizar">
+      </form>
+
+
 <FONT SIZE=2>
 <table class="eg">
+
+
 
   <tr>
     <th>Centro</th>

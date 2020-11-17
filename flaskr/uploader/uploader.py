@@ -238,10 +238,12 @@ def updatePaciente(dni):
 @bp.route('/listadoPacientes')
 @uploader_login_required
 def listadoPacientes():
-    db = get_db()
-    pacientes = db.execute('SELECT * FROM paciente ORDER BY centro, estado',).fetchall()
+    if request.method == 'POST':
+        db = get_db()
+        pacientes = db.execute('SELECT * FROM paciente ORDER BY centro, estado',).fetchall()
 
-    return render_template('uploader/listadoPacientes.html', pacientes=pacientes)
+
+    return render_template('uploader/listadoPacientes.html', pacientes=pacientes, ubiacaciones=ubicaciones)
 
 @bp.route('/')
 @uploader_login_required
