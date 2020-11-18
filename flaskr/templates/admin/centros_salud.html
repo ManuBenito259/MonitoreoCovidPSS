@@ -17,6 +17,7 @@
           <div class="about">Mail:  {{ centro['mail']}}</div>
           <div class="about">Telefono:  {{ centro['telefono']}}</div>
           <div class="about">Publico:  {{ centro['publico']}}</div>
+          <div class="about">Usuario:  {{ centro['responsable']}}</div>
         </div>
         <form action="{{ url_for('admin.deleteCentro', id=centro['nombre'])}}" method="post">
           <input class="danger" type="submit" value="Eliminar" onclick="return confirm('Esta seguro de que desea eliminar este centro desalud?');">

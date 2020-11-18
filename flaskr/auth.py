@@ -42,10 +42,10 @@ def uploader_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM users WHERE username = ? AND type = ?', (username, "uploader")
+            'SELECT * FROM usuarioCarga WHERE username = ?', (username,)
         ).fetchone()
 
-        if (user is None) or (not check_password_hash(user['password'], password)):
+        if (user is None): #or (not check_password_hash(user['password'], password)):
             error = 'La contraseña y/o nombre de usuario es incorrecto'
 
         if error is None:

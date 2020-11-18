@@ -18,39 +18,13 @@ def admin_index():
         ' FROM users'
     ).fetchall()
 
-    return render_template('admin/index.html', users=users)
+    upUsers = db.execute(
+        'SELECT *'
+        ' FROM usuarioCarga'
+    ).fetchall()
 
-
-@bp.route('/register_uploader', methods=('GET', 'POST'))
-@admin_login_required
-def uploaderRegister():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
-
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif db.execute(
-                'SELECT id FROM users WHERE username = ?', (username,)
-        ).fetchone() is not None:
-            error = 'User {} is already registered.'.format(username)
-
-        if error is None:
-            db.execute(
-                'INSERT INTO users (username, password, type) VALUES (?, ?, ?)',
-                (username, generate_password_hash(password), "uploader")
-            )
-            db.commit()
-            return redirect(url_for('admin.admin_index'))
-
-        flash(error)
-
-    return render_template('admin/uploader_register.html')
-
+    return render_template('admin/index.html', users=users, upUsers = upUsers)
+    
 
 @bp.route('/register_viewer', methods=('GET', 'POST'))
 @admin_login_required
@@ -171,31 +145,40 @@ def uploadCentro():
         mail = request.form['mail']
         telefono = request.form['telefono']
         publico = request.form['publico']
+        usuario = request.form['usuario']
+        password = request.form['password']
         db = get_db()
         error = None
 
-        if not nombre:
-            error = 'Ingrese el Nombre del Centro de Salud.'
-        elif not ubicacion:
-            error = 'Ingrese la ubicacion.'
-        elif not mail:
-            error = 'Ingrese un mail'
-        elif not telefono:
-            error = 'Ingrese un telefono'
-        elif not direccion:
+       ## if not nombre:
+       ##     error = 'Ingrese el Nombre del Centro de Salud.'
+       ## elif not ubicacion:
+       ##     error = 'Ingrese la ubicacion.'
+       ## elif not mail:
+       ##     error = 'Ingrese un mail'
+       ## elif not telefono:
+       ##     error = 'Ingrese un telefono'
+        if not direccion:
             error = 'Ingrese una direccion'
-        elif not publico:
-            error = 'Indique si el centro de salud es publico'
-
         elif db.execute(
                 'SELECT id FROM centroSalud WHERE nombre = ? AND ubicacion = ?', (nombre, ubicacion)
         ).fetchone() is not None:
             error = 'El hospital {} ya fue cargado.'.format(nombre)
+        elif db.execute(
+            'SELECT username FROM usuarioCarga WHERE username = ?', (usuario,)
+        ).fetchone() is not None:
+            error = 'El nombre de usuario ingresado ya existe.'
+
 
         if error is None:
             db.execute(
-                'INSERT INTO centroSalud (nombre, ubicacion, direccion, mail, telefono, publico) VALUES (?, ?, ?, ?, ?, ?)',
-                (nombre, ubicacion, direccion, mail, telefono, publico)
+                'INSERT INTO centroSalud (nombre, ubicacion, direccion, mail, telefono, publico, responsable) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (nombre, ubicacion, direccion, mail, telefono, publico, usuario)
+            )
+
+            db.execute(
+                'INSERT INTO usuarioCarga (username, password, centroSalud) VALUES (?, ?, ?)',
+                (usuario, password, nombre)
             )
             db.commit()
             return redirect(url_for('admin.centrosSalud'))

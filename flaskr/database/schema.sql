@@ -17,9 +17,9 @@ CREATE TABLE centroSalud(
     ubicacion INTEGER NOT NULL,
     direccion VARCHAR(45) NOT NULL,
     mail VARCHAR(50) NOT NULL,
-    responsable INTEGER, /*TODO: quickfix, solve when all tables are functional*/
     telefono INTEGER NOT NULL,
     publico BOOLEAN NOT NULL,
+    responsable TEXT NOT NULL,
 
     CONSTRAINT pk_centroSalud
     PRIMARY KEY (id),
@@ -27,11 +27,11 @@ CREATE TABLE centroSalud(
     CONSTRAINT fk_centroSalud_ubicacion
     FOREIGN KEY (ubicacion) REFERENCES ubicacion(cp)
 
-    /*
+    
     CONSTRAINT fk_centroSalud_usuarioCarga
-    FOREIGN KEY (responsable) REFERENCES usuarioCarga(dni)
+    FOREIGN KEY (responsable) REFERENCES usuarioCarga(username)
 
-     */
+     
 );
 
 CREATE TABLE ubicacion(
@@ -60,30 +60,14 @@ CREATE TABLE paciente(
 );
 
 
-CREATE TABLE usuarioLector(
-    dni INTEGER UNSIGNED NOT NULL,
-    nombre VARCHAR(45) NOT NULL,
-    apellido VARCHAR(45) NOT NULL,
-    jurisdiccion INTEGER NOT NULL,
-
-    CONSTRAINT pk_usuarioLector
-    PRIMARY KEY (dni),
-
-    CONSTRAINT fk_usuarioLector_ubicacion
-    FOREIGN KEY (jurisdiccion) REFERENCES ubicacion(cp)
-);
-
 CREATE TABLE usuarioCarga(
-    dni INTEGER UNSIGNED NOT NULL,
-    nombre VARCHAR(45) NOT NULL,
-    apellido VARCHAR(45) NOT NULL,
-    centroSalud INTEGER UNSIGNED NOT NULL,
-
-    CONSTRAINT pk_usuarioCarga
-    PRIMARY KEY (dni),
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    centroSalud VARCHAR(45) NOT NULL,
 
     CONSTRAINT fk_usuarioCarga_centroSalud
-    FOREIGN KEY (centroSalud) REFERENCES centroSalud(id)
+    FOREIGN KEY (centroSalud) REFERENCES centroSalud(nombre)
 );
 
 CREATE TABLE cargaDiaria(
@@ -112,8 +96,6 @@ CREATE TABLE cargaDiaria(
     FOREIGN KEY (centroSalud) REFERENCES centroSalud(id)
 
 );
-
-
 
 
 
