@@ -13,10 +13,21 @@
                {%endfor%}
         </select>
 
+
+        <input type="checkbox"  id="respiradores" name="respiradores" value="respiradores" {{ 'checked' if respiradores else ''}}>
+          <label for="respiradores"> Respiradores</label><br>
+        <input type="checkbox"  id="pacientes" name="pacientes" value="pacientes" {{ 'checked' if pacientes else ''}} >
+          <label for="pacientes"> Pacientes</label><br>
+        <input type="checkbox"  id="camasUTI" name="camasUTI" value="camasUTI" {{ 'checked' if camasUTI else ''}}>
+          <label for="camasUTI"> Camas UTI</label><br>
+        <input type="checkbox" id="camasGC" name="camasGC" value="camasGC" {{ 'checked' if camasGC else ''}}>
+          <label for="camasGC"> Camas GC</label><br>
+
+
+
          <input type="submit" value="Actualizar">
+
       </form>
-
-
 <FONT SIZE=2>
 <table class="eg">
 
@@ -25,34 +36,50 @@
   <tr>
     <th>Centro</th>
     <th>Fecha</th>
-    <th>Respiradores disponibles</th>
-    <th>Respiradores ocupados</th>
-    <th>Camas de UTI disponibles</th>
-    <th>Camas de UTI ocupadas</th>
-    <th>Camas con GC disponibles</th>
-    <th>Camas con GC ocupadas</th>
-    <th>Pacientes ingresados clinicos</th>
-    <th>Pacientes ingresados con Covid</th>
-    <th>Pacientes dados de alta</th>
-    <th>Pacientes fallecidos</th>
-    <th>Pacientes derivados a UTI</th>
+      {% if respiradores %}
+              <th>Respiradores disponibles</th>
+              <th>Respiradores ocupados</th>
+      {% endif %}
+      {% if camasUTI %}
+              <th>Camas de UTI disponibles</th>
+              <th>Camas de UTI ocupadas</th>
+      {% endif%}
+      {% if camasGC %}
+            <th>Camas con GC disponibles</th>
+            <th>Camas con GC ocupadas</th>
+      {% endif%}
+      {% if pacientes %}
+        <th>Pacientes ingresados clinicos</th>
+        <th>Pacientes ingresados con Covid</th>
+        <th>Pacientes dados de alta</th>
+        <th>Pacientes fallecidos</th>
+        <th>Pacientes derivados a UTI</th>
+      {% endif%}
   </tr>
 
   {% for post in posts %}
       <tr>
         <td align="center" >{{ post['centroSalud'] }}</td>
         <td align="center" >{{ post['fecha'] }}</td>
-        <td align="center" >{{ post['respDisp'] }}</td>
-        <td align="center" >{{ post['respOc'] }}</td>
-        <td align="center" >{{ post['camaUTIDisp'] }}</td>
-        <td align="center" >{{ post['camaUTIOc'] }}</td>
-        <td align="center" >{{ post['camaGCDisp'] }}</td>
-        <td align="center" >{{ post['camaGCOc'] }}</td>
-        <td align="center" >{{ post['pacNuevos'] }}</td>
-        <td align="center" >{{ post['pacCovidNuevos'] }}</td>
-        <td align="center" >{{ post['pacAlta'] }}</td>
-        <td align="center" >{{ post['pacFall'] }}</td>
-        <td align="center" >{{ post['pacUTI'] }}</td>
+         {% if respiradores %}
+             <td align="center" >{{ post['respDisp'] }}</td>
+             <td align="center" >{{ post['respOc'] }}</td>
+         {% endif%}
+         {% if camasUTI %}
+             <td align="center" >{{ post['camaUTIDisp'] }}</td>
+             <td align="center" >{{ post['camaUTIOc'] }}</td>
+         {% endif%}
+         {% if camasGC %}
+             <td align="center" >{{ post['camaGCDisp'] }}</td>
+             <td align="center" >{{ post['camaGCOc'] }}</td>
+         {% endif%}
+         {% if pacientes %}
+             <td align="center" >{{ post['pacNuevos'] }}</td>
+             <td align="center" >{{ post['pacCovidNuevos'] }}</td>
+             <td align="center" >{{ post['pacAlta'] }}</td>
+             <td align="center" >{{ post['pacFall'] }}</td>
+             <td align="center" >{{ post['pacUTI'] }}</td>
+         {% endif%}
 
       </tr>
   {% endfor %}

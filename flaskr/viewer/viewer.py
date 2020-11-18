@@ -36,14 +36,22 @@ def estadisticas():
                 ' ORDER BY id DESC'
                 , (jurisdiccion,)
             ).fetchall()
-        return render_template('viewer/Estadisticas.html', posts=posts, ubicaciones=ubicaciones)
+
+        respiradores = request.form.get('respiradores') is not None
+        pacientes = request.form.get('pacientes') is not None
+        camasUTI = request.form.get('camasUTI') is not None
+        camasGC = request.form.get('camasGC') is not None
+
+        return render_template('viewer/Estadisticas.html', posts=posts, ubicaciones=ubicaciones, respiradores=respiradores,
+                           pacientes=pacientes, camasGC=camasGC, camasUTI=camasUTI)
 
     posts = db.execute(
         'SELECT *'
         ' FROM cargaDiaria'
         ' ORDER BY id DESC'
     ).fetchall()
-    return render_template('viewer/Estadisticas.html', posts=posts, ubicaciones=ubicaciones)
+    return render_template('viewer/Estadisticas.html', posts=posts, ubicaciones=ubicaciones, respiradores=True,
+                           pacientes=True, camasGC=True, camasUTI=True)
 
 
 

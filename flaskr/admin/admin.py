@@ -166,7 +166,6 @@ def locations():
 def uploadCentro():
     if request.method == 'POST':
         nombre = request.form['nombre']
-        print(request.form['ubicacion'])
         ubicacion = request.form['ubicacion']
         direccion = request.form['direccion']
         mail = request.form['mail']
