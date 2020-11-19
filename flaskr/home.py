@@ -11,4 +11,13 @@ bp = Blueprint('home', __name__)
 
 @bp.route('/')
 def index():
+    if g.user:
+        if g.user['type'] == "viewer":
+            return redirect(url_for('data.index'))
+
+        if g.user['type'] == "uploader":
+            return redirect(url_for('upload.index'))
+
+        if g.user['type'] == "admin":
+            return redirect(url_for('admin.admin_index'))
     return render_template('home/home.html')

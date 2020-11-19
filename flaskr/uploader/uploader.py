@@ -50,7 +50,12 @@ def uploadDatosHospital():
 
     # Carga manual
     if request.method == 'POST' and request.form['submitButton'] == 'SaveCarga':
-        centroSalud = request.form['centroSalud']
+        db = get_db()
+        centroSalud = db.execute('SELECT * FROM centroSalud '
+                                 'JOIN users ON centroSalud.responsable = users.username '
+                                 'WHERE users.id = ?', (session['user_id'],)).fetchone()
+        centroSalud = centroSalud['nombre']
+        print(centroSalud)
         # TODO: El centro de salud deberia obtenerse a partir de el usuario logueado para evitar inconsistencias
         fecha = request.form['fecha']
         respiradoresDisp = request.form['respiradoresDisponibles']
@@ -60,16 +65,16 @@ def uploadDatosHospital():
         camaGCDisp = request.form['camasGCDisponibles']
         camaGCOc = request.form['camasGCOcupadas']
 
-        db = get_db()
+
 
         error = None
 
-        fechaDB = db.execute(
-            'SELECT DISTINCT fecha FROM cargaDiaria WHERE centroSalud = ? AND fecha = ?', (centroSalud, fecha,)
-        ).fetchone()
-
-        if fechaDB is not None:
-            error = 'El centro de salud ' + centroSalud + ' ya realizó una carga el día de hoy'
+        #fechaDB = db.execute(
+        #    'SELECT DISTINCT fecha FROM cargaDiaria WHERE centroSalud = ? AND fecha = ?', (centroSalud, fecha,)
+        #).fetchone()
+#
+        #if fechaDB is not None:
+        #    error = 'El centro de salud ' + centroSalud + ' ya realizó una carga el día de hoy'
 
         if (int(respiradoresDisp) < 0) or (int(respiradoresOc) < 0) or (int(camaUTIDisp) < 0) or (
                 int(camaUTIOc) < 0) or (int(camaGCDisp) < 0) or (int(camaGCOc) < 0):
@@ -238,12 +243,11 @@ def updatePaciente(dni):
 @bp.route('/listadoPacientes')
 @uploader_login_required
 def listadoPacientes():
-    if request.method == 'POST':
-        db = get_db()
-        pacientes = db.execute('SELECT * FROM paciente ORDER BY centro, estado',).fetchall()
+    db = get_db()
+    pacientes = db.execute('SELECT * FROM paciente ORDER BY centro, estado',).fetchall()
 
 
-    return render_template('uploader/listadoPacientes.html', pacientes=pacientes, ubiacaciones=ubicaciones)
+    return render_template('uploader/listadoPacientes.html', pacientes=pacientes)
 
 @bp.route('/')
 @uploader_login_required

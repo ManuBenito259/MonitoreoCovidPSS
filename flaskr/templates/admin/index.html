@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}System Users{% endblock %}</h1>
+  <h1>{% block title %}Usuarios del Sistema{% endblock %}</h1>
   {% if g.user %}
     <a class="action" href="{{ url_for('admin.viewerRegister') }}">Nuevo viewer</a>
     <a class="action" href="{{ url_for('admin.adminRegister') }}">Nuevo administrador</a>

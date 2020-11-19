@@ -172,15 +172,18 @@ def uploadCentro():
 
         if error is None:
             db.execute(
+                'INSERT INTO users (username, password, type) VALUES (?, ?, ?)',
+                (usuario, password, "uploader")
+            )
+            db.commit()
+
+            db.execute(
                 'INSERT INTO centroSalud (nombre, ubicacion, direccion, mail, telefono, publico, responsable) VALUES (?, ?, ?, ?, ?, ?, ?)',
                 (nombre, ubicacion, direccion, mail, telefono, publico, usuario)
             )
-
-            db.execute(
-                'INSERT INTO usuarioCarga (username, password, centroSalud) VALUES (?, ?, ?)',
-                (usuario, password, nombre)
-            )
             db.commit()
+
+
             return redirect(url_for('admin.centrosSalud'))
 
         flash(error)
@@ -210,7 +213,12 @@ def centrosSalud():
 def deleteCentro(id):
     db = get_db()
 
+    user = db.execute('SELECT responsable FROM centroSalud WHERE nombre = ?',(id,)).fetchone()
+
+
+    db.execute('DELETE FROM users WHERE username = ?',(user,)).fetchall()
     db.execute('DELETE FROM centroSalud WHERE nombre = ?',(id,)).fetchall()
+
     db.commit()
 
     flash("Se eliminó el centro de salud: "+id)

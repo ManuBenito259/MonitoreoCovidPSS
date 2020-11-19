@@ -25,11 +25,11 @@ CREATE TABLE centroSalud(
     PRIMARY KEY (id),
 
     CONSTRAINT fk_centroSalud_ubicacion
-    FOREIGN KEY (ubicacion) REFERENCES ubicacion(cp)
+    FOREIGN KEY (ubicacion) REFERENCES ubicacion(cp),
 
     
     CONSTRAINT fk_centroSalud_usuarioCarga
-    FOREIGN KEY (responsable) REFERENCES usuarioCarga(username)
+    FOREIGN KEY (responsable) REFERENCES users(username)
 
      
 );

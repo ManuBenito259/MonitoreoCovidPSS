@@ -5,15 +5,12 @@
 {% endblock %}
 
 {% block content %}
-<FONT SIZE=1>
 <table class="eg">
 
 
 
   {% for reporte in reportes %}
-     <br><label>En la provincia de {{reporte['provincia']}} </label><br/>
-     <br><label>Se registraron {{reporte['pacNuevos']}} nuevos ingresos clinicos y </label>
-     <label> {{reporte['pacCovidNuevos']}} nuevos casos de coronavirus </label><br/>
+     <br><label>En la provincia de {{reporte['provincia']}} se registraron {{reporte['pacNuevos']}} nuevos ingresos clinicos y  {{reporte['pacCovidNuevos']}} nuevos casos de coronavirus </label><br/>
   {% endfor %}
   </table>
 

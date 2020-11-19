@@ -42,7 +42,7 @@ def uploader_login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM usuarioCarga WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE username = ? AND type = ?', (username, "uploader")
         ).fetchone()
 
         if (user is None): #or (not check_password_hash(user['password'], password)):
